@@ -10,17 +10,109 @@ function puzzleN {
 }
 #puzzleN
 
-function puzzle22 {
+function puzzle24 {
     function input {
-        @(
-            
-        )
+        @()
     }
 
     $i = input
     $i
 }
-puzzle22
+puzzle24
+
+function puzzle23 {
+    function input {
+        @(
+            'set b 93',
+            'set c b',
+            'jnz a 2',
+            'jnz 1 5',
+            'mul b 100',
+            'sub b -100000',
+            'set c b',
+            'sub c -17000',
+            'set f 1',
+            'set d 2',
+            'set e 2',
+            'set g d',
+            'mul g e',
+            'sub g b',
+            'jnz g 2',
+            'set f 0',
+            'sub e -1',
+            'set g e',
+            'sub g b',
+            'jnz g -8',
+            'sub d -1',
+            'set g d',
+            'sub g b',
+            'jnz g -13',
+            'jnz f 2',
+            'sub h -1',
+            'set g b',
+            'sub g c',
+            'jnz g 2',
+            'jnz 1 3',
+            'sub b -17',
+            'jnz 1 -23'
+        )
+    }
+
+    $i = @(input | %{
+        $op,$x,$y = $_ -split ' '
+        [pscustomobject]@{op=$op; x=$x; y=$y;}
+    })
+
+    # init registers
+    $defaultRegisters = @{}
+    $i | %{
+        if ([char]::IsLetter($_.x[0])) { $defaultRegisters[$_.x] = 0 }
+        if ($_.y -AND [char]::IsLetter($_.y[0])) { $defaultRegisters[$_.y] = 0 }
+    }
+    
+    function part1 {
+        $registers = $defaultRegisters.Clone()
+        $freq = -1
+        $pos = 0
+        $mulCount = 0
+        while($pos -lt $i.Count) {
+            $inst = $i[$pos]
+            $regX = $inst.x
+            $regY = $inst.y
+            $x = if ([char]::IsLetter($regX[0])) { $registers[$regX] } else { [int]$regX }
+            $y = if ($regY -AND [char]::IsLetter($regY[0])) { $registers[$regY] } else { [int]$regY }
+
+            $jmp = 1
+            switch ($inst.op) {
+                'set' { $registers[$regX] = $y; break}
+                'sub' { $registers[$regX] = $x - $y; break}
+                'add' { $registers[$regX] = $x + $y; break}
+                'mul' { $registers[$regX] = $x * $y; ++$mulCount; break}
+                'mod' { $registers[$regX] = $x % $y; break}
+                'jgz' { if ($x -gt 0) { $jmp = $y }; break}
+                'jnz' { if ($x -ne 0) { $jmp = $y }; break}
+            }
+            $pos += $jmp
+        }
+        return $mulCount
+    }
+    "Part 1: MUL count: $(part1)"
+
+    $h = 0;
+    for ($n = 0; $n -le 1000; ++$n) {
+    
+        $b = 109300 + ($n * 17)
+
+        :loop1 for ($i = 2; $i -le [math]::sqrt($b) + 1; ++$i) {
+            if ($b % $i -eq 0) {
+                ++$h
+                break :loop1;
+            }
+        }
+    }
+    "Part 2: Number of non-primes: h = $h"
+}
+puzzle23
 
 function puzzle21 {
     function input {
