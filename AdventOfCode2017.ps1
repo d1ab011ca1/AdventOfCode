@@ -1,24 +1,213 @@
 Set-StrictMode -Version Latest
 Clear-Host
 
-function puzzleN {
-    function input {
+function puzzle25 {
+    $tape = [System.Collections.BitArray]::new(10000*2, $false)
+
+    New-Variable 'p' -Value 10000 -Option AllScope
+    $stateA = {
+        if (!$tape[$p]) {
+            $tape[$p] = $true
+            ++$p
+            return $stateB
+        } else {
+            $tape[$p] = $false
+            --$p
+            return $stateE
+        }
+    }
+    $stateB = {
+        if (!$tape[$p]) {
+            $tape[$p] = $true
+            --$p
+            return $stateC
+        } else {
+            $tape[$p] = $false
+            ++$p
+            return $stateA
+        }
+    }
+    $stateC = {
+        if (!$tape[$p]) {
+            $tape[$p] = $true
+            --$p
+            return $stateD
+        } else {
+            $tape[$p] = $false
+            ++$p
+            return $stateC
+        }
+    }
+    $stateD = {
+        if (!$tape[$p]) {
+            $tape[$p] = $true
+            --$p
+            return $stateE
+        } else {
+            $tape[$p] = $false
+            --$p
+            return $stateF
+        }
+    }
+    $stateE = {
+        if (!$tape[$p]) {
+            $tape[$p] = $true
+            --$p
+            return $stateA
+        } else {
+            #$tape[$p] = $false
+            --$p
+            return $stateC
+        }
+    }
+    $stateF = {
+        if (!$tape[$p]) {
+            $tape[$p] = $true
+            --$p
+            return $stateE
+        } else {
+            #$tape[$p] = $false
+            ++$p
+            return $stateA
+        }
     }
 
-    $i = input
-    $i
+    $state = $stateA
+    foreach($n in 1..12208951) {
+        $state = & $state
+        if ($n % 100000 -eq 0) {
+            Write-Host "$n : $p"
+        }
+    }
+
+    $n = 0
+    foreach ($b in $tape) {
+        if ($b) { ++$n }
+    }
+    "Number of set bits: $n"
 }
-#puzzleN
+puzzle25
 
 function puzzle24 {
     function input {
-        @()
+        #return @(
+        #    '0/2',
+        #    '2/2',
+        #    '2/3',
+        #    '3/4',
+        #    '3/5',
+        #    '0/1',
+        #    '10/1',
+        #    '9/10'
+        #)
+
+        @(
+            '50/41',
+            '19/43',
+            '17/50',
+            '32/32',
+            '22/44',
+            '9/39',
+            '49/49',
+            '50/39',
+            '49/10',
+            '37/28',
+            '33/44',
+            '14/14',
+            '14/40',
+            '8/40',
+            '10/25',
+            '38/26',
+            '23/6',
+            '4/16',
+            '49/25',
+            '6/39',
+            '0/50',
+            '19/36',
+            '37/37',
+            '42/26',
+            '17/0',
+            '24/4',
+            '0/36',
+            '6/9',
+            '41/3',
+            '13/3',
+            '49/21',
+            '19/34',
+            '16/46',
+            '22/33',
+            '11/6',
+            '22/26',
+            '16/40',
+            '27/21',
+            '31/46',
+            '13/2',
+            '24/7',
+            '37/45',
+            '49/2',
+            '32/11',
+            '3/10',
+            '32/49',
+            '36/21',
+            '47/47',
+            '43/43',
+            '27/19',
+            '14/22',
+            '13/43',
+            '29/0',
+            '33/36',
+            '2/6'
+        )
     }
 
-    $i = input
-    $i
+    $m = @{}
+    input | %{
+        $a,$b = $_ -split '\/'
+        $o = [pscustomobject]@{avail = $true} 
+        $oa = [pscustomobject]@{n=[int]$a; v=[int]$b; o=$o}
+        $ob = [pscustomobject]@{n=[int]$b; v=[int]$a; o=$o}
+        $m[[int]$a] += @($oa)
+        $m[[int]$b] += @($ob)
+    }
+    #$m
+    
+    function part1([int]$n) {
+        $max = 0
+        foreach ($_ in $m[$n]) {
+            if ($_.o.avail) {
+                $_.o.avail = $false
+                $v = $_.n + $_.v + (part1 $_.v)
+                $max = [math]::Max($max, $v)
+                $_.o.avail = $true
+            } 
+        }
+        $max
+    }
+    #"Part 1: $(part1 0)"
+
+    function part2([int]$n) {
+        $maxv = 0
+        $maxlen = 0
+        foreach ($_ in $m[$n]) {
+            if ($_.o.avail) {
+                $_.o.avail = $false
+                $v,$len = part2 $_.v
+                $v += $_.n + $_.v
+                $len += 1
+                $_.o.avail = $true
+                if (($len -gt $maxlen) -OR
+                    ($len -eq $maxlen -AND $v -gt $maxv)) {
+                    $maxlen = $len
+                    $maxv = $v
+                }
+            } 
+        }
+        $maxv
+        $maxlen
+    }
+    "Part 2: $(part2 0)"
 }
-puzzle24
+#puzzle24
 
 function puzzle23 {
     function input {
@@ -112,7 +301,7 @@ function puzzle23 {
     }
     "Part 2: Number of non-primes: h = $h"
 }
-puzzle23
+#puzzle23
 
 function puzzle21 {
     function input {
