@@ -118,7 +118,7 @@ position=< 5,  9> velocity=< 1, -2>
 position=<14,  7> velocity=<-2,  0>
 position=<-3,  6> velocity=< 2, -1>'
 
-    $source = Get-Content ([system#.io.path]::ChangeExtension($PSCmdlet.MyInvocation.MyCommand, 'txt'))
+    $source = Get-Content ([system.io.path]::ChangeExtension($PSCmdlet.MyInvocation.MyCommand, 'txt'))
 
     $source -split "`n" | % {
         if (!($_ -match 'position=<([^,]+), ([^>]+)> velocity=<([^,]+), ([^>]+)>')) {throw $_}
