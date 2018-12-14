@@ -6,8 +6,8 @@ Set-StrictMode -Version Latest
 Clear-Host
 
 function main {
-    part1 #= 3915
-    #part2 #= 
+    #part1 #= 3915
+    part2 #= 4900000001793
 }
 
 function DoIt([long]$rounds) {
@@ -16,14 +16,14 @@ function DoIt([long]$rounds) {
     [Regex]$regex = $in.Rules.foreach{ '(' + [regex]::Escape($_.Pattern) + ')' } -join '|'
     #$regex.ToString()
 
-    $pots = '....' + $in.Pots + ('.' * 20)
-    $begin = 4
-    $length = $in.Pots.Length
-    Write-Host ('{0,2}: {1}' -f 0, $pots)
+    $pots = '....' + $in.Pots + '....'
+    $offset = 4
+    Write-Host ('{0,3}: [{1,4}] {2}' -f 0, -$offset, $pots)
     
     $next = [System.Text.StringBuilder]::new(400)
     for ([long]$round = 1; $round -le $rounds; $round++) {
-        $null = $next.Clear().Append('.' * (4 + $length + 20))
+        $null = $next.Clear().Append([char]'.', $pots.Length)
+
         $startAt = 0
         while ($startAt -lt $pots.Length) {
             $m = $regex.Match($pots, $startAt)
@@ -31,13 +31,10 @@ function DoIt([long]$rounds) {
                 break
             }
 
-            # which capture matched?
+            # which capture group matched?
             for ($i = 1; $i -lt $m.Groups.Count; $i++) {
                 if ($m.Groups[$i].Success) {
-                    $c = $in.Rules[$i - 1].Next
-                    $x = $m.Index + 2
-                    $next[$x] = $c
-                    #Write-Host $next.ToString()
+                    $next[$m.Index + 2] = $in.Rules[$i - 1].Next
                     break
                 }
             }
@@ -45,25 +42,32 @@ function DoIt([long]$rounds) {
             $startAt = $m.Index + 1
         }
 
-        $pots = $next.ToString()
-        for ($i = 0; $i -lt $pots.Length; $i++) {
-            if ($pots[$i] -eq '#') {
-                $begin = $i
-                for (; $i -lt $pots.Length; $i++) {
-                    if ($pots[$i] -eq '#') {
-                        $length = $i - $begin + 1
+        $first = $last = -1
+        for ($i = 0; $i -lt $next.Length; $i++) {
+            if ($next[$i] -eq '#') {
+                $first = $last = $i
+                while (++$i -lt $next.Length) {
+                    if ($next[$i] -eq '#') {
+                        $last = $i
                     }
                 }
                 break
             }
         }
-        Write-Host ('{0,2}: {1}' -f $round, $pots)
+        if ($first -eq -1) {
+            Write-Host "EMPTY!!!!" -ForegroundColor Green
+            break
+        }
+
+        $pots = $next.Insert($first, '....').Append('....').ToString($first, $last - $first + 1 + 4 + 4)
+        $offset += 4 - $first
+        Write-Host ('{0,3}: [{1,4}] {2}' -f $round, -$offset, $pots)
     }
 
     $sum = 0
     for ($i = 0; $i -lt $pots.Length; $i++) {
         if ($pots[$i] -eq '#') {
-            $sum += $i - $begin
+            $sum += $i - $offset
         }
     }
     $sum
@@ -74,7 +78,19 @@ function part1 {
 }
 
 function part2 {
-    DoIt 40
+    [long]$rounds = 50000000000
+    #DoIt $rounds
+
+    $pots = '....##.##.##.##....##.##.##.##.##.##.##.##.##....##.##.##.##.##.##.##.##.##....##.##.##....##.##.##.##.##.##....##.##.##.##.##.##.##.##....##.##.##.##.##.##.##.##.##.##....'
+    [long]$offset = -($rounds - 68)
+
+    [long]$sum = 0
+    for ($i = 0; $i -lt $pots.Length; $i++) {
+        if ($pots[$i] -eq '#') {
+            $sum += $i - $offset
+        }
+    }
+    $sum
 }
 
 function input {
@@ -96,7 +112,7 @@ function input {
 ###.# => #
 ####. => #'
 
-    #$source = Get-Content ([system.io.path]::ChangeExtension($PSCmdlet.MyInvocation.MyCommand, 'txt'))
+    $source = Get-Content ([system.io.path]::ChangeExtension($PSCmdlet.MyInvocation.MyCommand, 'txt'))
 
     #$source = $source.Replace('.', '_')
     $text = $source -split "`r?`n"
