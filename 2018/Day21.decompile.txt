@@ -1,0 +1,26 @@
+ 1: if ((123 & 456) != 72)
+        continue
+
+ 5: r1 = 0
+28: do { 
+ 6:     r4 = r1 | 0x10000
+ 7:     r1 = 3798839
+        while (1) {
+ 8:         r1 += r4 & 0xff
+10:         r1 &= 0xffffff
+11:         r1 *= 65899
+12:         r1 &= 0xffffff
+
+            // rest is equivelent to r4 /= 256  or  r4 >>= 8
+13:         if (256 > r4)
+16:             break
+
+17:         for (r5 = 0; ; ++r5) {
+18:             r2 = (r5 + 1) * 256
+20:             if (r2 > r4)
+23:                 break
+            }
+26:         r4 = r5
+        }
+28: } while (r1 != r0)
+31: EXIT
