@@ -1,7 +1,9 @@
 open System
 open System.IO
 
-let realInputText = File.ReadAllText("Day 2.txt")
+let realInputText = 
+    let inputPath = Path.ChangeExtension(fsi.CommandLineArgs.[0], ".txt")
+    File.ReadAllText(inputPath)
 
 let sampleInputText =
     """
@@ -37,7 +39,7 @@ let part1 () =
 
     let pos = {| x = x; y = y |}
     let answer = x * y
-    printfn "Part 1: %d, pos=%O\n" answer pos
+    printfn $"Part 1: {answer}, pos={pos}\n"
 
 part1 ()
 
@@ -54,6 +56,6 @@ let part2 () =
 
     let pos = {| x = x; y = y; aim = aim |}
     let answer = x * y
-    printfn "Part 2: %d, pos=%O\n" answer pos
+    printfn $"Part 2: {answer}, pos={pos}\n"
 
 part2 ()
