@@ -1,6 +1,8 @@
+#r "nuget: FSharp.Collections.ParallelSeq"
+
 open System
 open System.IO
-open System.Collections.Generic
+open FSharp.Collections.ParallelSeq
 
 let digitToInt (c: char) =
     match int c with
@@ -57,87 +59,119 @@ let sizeY = inputs.Length
 
 type Point = (int * int)
 
-let isValidPoint (x, y) =
-    (0 <= x && x < sizeX) && (0 <= y && y < sizeY)
+let pathCost (inputs: int [] []) (path: Point seq) =
+    path |> Seq.sumBy (fun (x, y) -> inputs.[y].[x])
 
-let checkPoint (pt: Point) =
-    if isValidPoint pt then
-        Some pt
-    else
-        None
+let enumPaths (inputs: int [] []) =
+    let sizeX = inputs.[0].Length
+    let sizeY = inputs.Length
 
-let (|Up|_|) (x, y) = checkPoint (x, y - 1)
-let (|Down|_|) (x, y) = checkPoint (x, y + 1)
-let (|Left|_|) (x, y) = checkPoint (x - 1, y)
-let (|Right|_|) (x, y) = checkPoint (x + 1, y)
+    let isValidPoint (x, y) =
+        (0 <= x && x < sizeX) && (0 <= y && y < sizeY)
 
-let tryValue (x, y) =
-    if isValidPoint (x, y) then
-        Some inputs.[y].[x]
-    else
-        None
+    let checkPoint (pt: Point) =
+        if isValidPoint pt then
+            Some pt
+        else
+            None
 
-let value pt =
-    tryValue pt
-    |> Option.defaultWith (fun _ -> failwithf "value out of range: %A" pt)
+    let (|Up|_|) (x, y) = checkPoint (x, y - 1)
+    let (|Down|_|) (x, y) = checkPoint (x, y + 1)
+    let (|Left|_|) (x, y) = checkPoint (x - 1, y)
+    let (|Right|_|) (x, y) = checkPoint (x + 1, y)
 
-let pathCost (path: Point seq) = path |> Seq.sumBy value
+    let tryValue (x, y) =
+        if isValidPoint (x, y) then
+            Some inputs.[y].[x]
+        else
+            None
 
-let start: Point = (0, 0)
-let endPt: Point = (sizeX - 1, sizeY - 1)
+    let value pt =
+        tryValue pt
+        |> Option.defaultWith (fun _ -> failwithf "value out of range: %A" pt)
+
+    let start: Point = (0, 0)
+    let endPt: Point = (sizeX - 1, sizeY - 1)
+    let startCost = value start
+
+    let mutable minCost = Int32.MaxValue
+    let mutable stack = [ (start, Set.empty, 0) ]
+
+    seq {
+        while stack |> Seq.length > 0 do
+            for (pt, _, cost) in stack do
+                if pt = endPt then
+                    let cost = cost + (value pt)
+
+                    if cost < minCost then
+                        minCost <- cost
+                        yield cost - startCost // answer
+
+            stack <-
+                stack
+                |> PSeq.collect (fun (pt, path, cost) ->
+                    let cost = cost + (value pt)
+
+                    if cost < minCost && pt <> endPt then
+                        let path = path |> Set.add pt
+
+                        seq {
+                            match pt with
+                            | Up next -> yield (next, path, cost)
+                            | _ -> ()
+
+                            match pt with
+                            | Down next -> yield (next, path, cost)
+                            | _ -> ()
+
+                            match pt with
+                            | Left next -> yield (next, path, cost)
+                            | _ -> ()
+
+                            match pt with
+                            | Right next -> yield (next, path, cost)
+                            | _ -> ()
+                        }
+                    else
+                        Seq.empty)
+                // Sort by lowest cost
+                |> PSeq.sortBy (fun (pt, _, cost) -> cost + (value pt))
+                // Dont backtrack
+                |> PSeq.filter (fun (pt, path, _) -> path |> (not << Set.contains pt))
+                // Remove dups
+                |> Seq.distinctBy (fun (pt, _, _) -> pt)
+                |> Seq.toList
+    }
 
 let part1 () =
-
-    let enumPaths () =
-        let mutable minCost = Int32.MaxValue
-        let mutable stack = [ (start, Set.empty, 0) ]
-
-        seq {
-            while stack |> Seq.length > 0 do
-                for (pt, path, cost) in stack do
-                    if pt = endPt then
-                        yield pt :: (path |> Seq.toList) // answer
-                        let cost = cost + (value pt)
-                        if cost < minCost then minCost <- cost
-
-                stack <-
-                    seq {
-                        for (pt, path, cost) in stack do
-                            let cost = cost + (value pt)
-
-                            if cost < minCost && pt <> endPt then
-                                let path = path |> Set.add pt
-
-                                match pt with
-                                | Up next -> yield (next, path, cost)
-                                | _ -> ()
-
-                                match pt with
-                                | Down next -> yield (next, path, cost)
-                                | _ -> ()
-
-                                match pt with
-                                | Left next -> yield (next, path, cost)
-                                | _ -> ()
-
-                                match pt with
-                                | Right next -> yield (next, path, cost)
-                                | _ -> ()
-                    }
-                    // Remove dups
-                    |> Seq.distinctBy (fun (pt, _, _) -> pt)
-                    // Dont backtrack
-                    |> Seq.where (fun (pt, path, _) -> path |> (not << Set.contains pt))
-                    // Sort by lowest cost
-                    |> Seq.sortBy (fun (pt, _, cost) -> cost + (value pt))
-                    |> Seq.toList
-        }
-
-    let minPath = enumPaths () |> Seq.head
-    let minCost = (minPath |> pathCost) - value start
+    let minCost = enumPaths inputs |> Seq.head
     printfn "Part 1: %d" minCost
 
-let part2 () = printfn "Part 2: "
+let part2 () =
+    // let inputs = [|[|8|]|]
+    // let sizeX = 1
+    // let sizeY = 1
+
+    let large =
+        Array.init (sizeY * 5) (fun y -> Array.create (sizeX * 5) 0)
+
+    for y = 0 to sizeY - 1 do
+        for x = 0 to sizeX - 1 do
+            let v = inputs.[y].[x]
+
+            for j in [ 0 .. 4 ] do
+                for i in [ 0 .. 4 ] do
+                    large.[j * sizeY + y].[i * sizeX + x] <- ((v + j + i - 1) % 9) + 1
+    // printfn "%A" large
+
+    let paths =
+        enumPaths large
+        |> Seq.map (fun x ->
+            printfn "%d" x
+            x)
+
+    let minCost = paths |> Seq.sort |> Seq.head
+    printfn "Part 2: %d" minCost
 
 part1 () // 613
-part2 () //
+part2 () // 2899
