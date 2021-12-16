@@ -1,21 +1,6 @@
 open System
 open System.IO
 
-let digitToInt (c: char) =
-    match int c with
-    | n when (int '0') <= n && n <= (int '9') -> n - (int '0')
-    | _ -> failwithf "Invalid decimal digit: %A" c
-
-let hexDigitToInt (c: char) =
-    match int c with
-    | n when (int '0') <= n && n <= (int '9') -> n - (int '0')
-    | n when (int 'A') <= n && n <= (int 'F') -> n - (int 'A') + 10
-    | n when (int 'a') <= n && n <= (int 'f') -> n - (int 'a') + 10
-    | _ -> failwithf "Invalid hex digit: %A" c
-
-let (|DecChar|) = digitToInt
-let (|HexChar|) = hexDigitToInt
-
 let realInputText =
     let inputPath =
         Path.ChangeExtension(fsi.CommandLineArgs.[0], ".txt")
@@ -24,7 +9,7 @@ let realInputText =
 
 let sampleInputText =
     """
-A0016C880162017C3686B18A3D4780
+C200B40A82
 """
 // D2FE28  [LiteralValue (6, 2021)]
 // 38006F45291200  [Operator (1, [LiteralValue (6, 10); LiteralValue (2, 20)])]
@@ -42,6 +27,11 @@ let inputs =
         )
 
     lines.[0]
+    |> Seq.chunkBySize 2
+    |> Seq.map (fun cs -> Convert.ToByte(String.Concat(cs), fromBase = 16))
+    |> Seq.map (fun b -> Convert.ToString(b, 2).PadLeft(8, '0'))
+    |> String.Concat
+
 //printfn "%A" inputs
 
 type PacketIdx = int
@@ -73,13 +63,6 @@ let nextInt32 (packet: string) pc n : (int * PacketIdx) =
     let (s, pc) = nextStr packet pc n
     Convert.ToInt32(s, fromBase = 2), pc
 
-let nextUInt32 (packet: string) pc n : (uint * PacketIdx) =
-    if n > 32 then
-        invalidArg "n" $"Too many bits for UInt32: {n}."
-
-    let (s, pc) = nextStr packet pc n
-    Convert.ToUInt32(s, fromBase = 2), pc
-
 let nextLiteral (packet: string) (pc: PacketIdx) : (int64 * PacketIdx) =
     let mutable res = {| pc = pc; value = 0L |}
     let mutable nibble = 0
@@ -103,7 +86,6 @@ let nextLiteral (packet: string) (pc: PacketIdx) : (int64 * PacketIdx) =
     res.value, res.pc
 
 let rec nextPacket (packet: string) (pc: PacketIdx) : (Packet * PacketIdx) =
-    let startAt = pc
     // Check for trailing zeros in last byte. All packets are greater than a byte
     if packet.Length - pc < 8 then
         match nextInt32 packet pc (packet.Length - pc) with
@@ -156,18 +138,9 @@ and parsePackets (packet: string) : Packet list =
               pc <- nextpc
               yield pkt ]
 
+let packets = parsePackets inputs
+
 let part1 () =
-    let binary =
-        inputs
-        |> Seq.chunkBySize 2
-        |> Seq.map (fun cs -> Convert.ToByte(String.Concat(cs), fromBase = 16))
-        |> Seq.map (fun b -> Convert.ToString(b, 2).PadLeft(8, '0'))
-        |> String.Concat
-
-    // let bits =
-    //     binary |> Seq.map ((=) '1') |> Seq.toArray
-
-    let pkts = parsePackets binary
 
     let rec calcVersionSum pkts =
         pkts
@@ -176,11 +149,38 @@ let part1 () =
             | LiteralValue { version = v } -> v
             | Operator { version = v; packets = subpkts } -> v + (subpkts |> calcVersionSum))
 
-    let versionSum = pkts |> calcVersionSum
-    printfn "%A" pkts
+    let versionSum = packets |> calcVersionSum
     printfn "Part 1: %A" versionSum
 
-let part2 () = printfn "Part 2: "
+let part2 () =
+
+    let rec compute =
+        function
+        | LiteralValue { value = v } -> v
+        | Operator { typeId = t; packets = ps } ->
+            let vs = ps |> Seq.map compute
+
+            let compare op (vs: int64 seq) =
+                vs
+                |> Seq.pairwise
+                |> Seq.map (fun (a, b) -> op a b)
+                |> Seq.where id
+                |> Seq.length
+                |> int64
+
+            match t with
+            | 0 -> vs |> Seq.sum
+            | 1 -> vs |> Seq.fold (*) 1L
+            | 2 -> vs |> Seq.min
+            | 3 -> vs |> Seq.max
+            | 5 -> vs |> compare (>)
+            | 6 -> vs |> compare (<)
+            | 7 -> vs |> compare (=)
+            | _ -> failwith $"Unexpected operator type: {t}."
+        | _ -> failwith "Unexpected packet."
+
+    let answer = packets |> Seq.head |> compute
+    printfn "Part 2: %d" answer
 
 part1 () // 860
-part2 () //
+part2 () // 470949537659
