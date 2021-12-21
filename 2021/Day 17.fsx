@@ -28,6 +28,19 @@ let sampleInputText =
 target area: x=20..30, y=-10..-5
 """
 
+let inputs =
+    let inputText = realInputText
+    let inputText = sampleInputText
+
+    let lines =
+        inputText.Split(
+            '\n',
+            StringSplitOptions.TrimEntries
+            ||| StringSplitOptions.RemoveEmptyEntries
+        )
+
+    lines.[0]
+
 type Size =
     { dx: int
       dy: int }
@@ -60,10 +73,12 @@ let (|Point|) (x, y) = Point.ofTuple (x, y)
 type Rect =
     { location: Point
       size: Size }
-    member this.bottom = this.location.y
-    member this.top = this.location.y + this.size.dy
+    member this.width = this.size.dx
+    member this.height = this.size.dy
     member this.left = this.location.x
-    member this.right = this.location.x + this.size.dx
+    member this.right = this.left + this.width
+    member this.bottom = this.location.y
+    member this.top = this.right + this.height
 
     static member offset size r =
         { r with location = r.location |> Point.offset size }
@@ -71,40 +86,30 @@ type Rect =
     static member grow size r =
         { r with size = r.size |> Size.grow size }
 
-    static member normalize r =
+    static member normalize(r: Rect) =
         // Ensure size is always positive by moving the location
         let r =
-            if r.size.dy < 0 then
-                { location = { r.location with y = r.location.y - -r.size.dy }
-                  size = { r.size with dy = -r.size.dy } }
+            if r.height < 0 then
+                { location = { r.location with y = r.right - -r.height }
+                  size = { r.size with dy = -r.height } }
             else
                 r
 
-        if r.size.dx < 0 then
-            { location = { r.location with x = r.location.x - -r.size.dx }
-              size = { r.size with dx = -r.size.dx } }
+        if r.width < 0 then
+            { location = { r.location with x = r.left - -r.width }
+              size = { r.size with dx = -r.width } }
         else
             r
 
-    static member contains pt r =
-        r.location.x <= pt.x
-        && pt.x <= r.location.x + r.size.dx
-        && r.location.y <= pt.y
-        && pt.y <= r.location.y + r.size.dy
+    static member contains pt (r: Rect) =
+        r.left <= pt.x
+        && pt.x < r.left + r.width
+        && r.right <= pt.y
+        && pt.y < r.right + r.height
 
-let inputs =
-    let inputText = realInputText
-    let inputText = sampleInputText
-
-    let lines =
-        inputText.Split(
-            '\n',
-            StringSplitOptions.TrimEntries
-            ||| StringSplitOptions.RemoveEmptyEntries
-        )
-
+let parse s =
     let m =
-        Regex.Match(lines.[0], """x=(.+)\.\.(.+), y=(.+)\.\.(.+)""")
+        Regex.Match(s, """x=(.+)\.\.(.+), y=(.+)\.\.(.+)""")
 
     let x1, x2, y1, y2 =
         m.Groups.[1].Value |> int, m.Groups.[2].Value |> int, m.Groups.[3].Value |> int, m.Groups.[4].Value |> int
@@ -112,23 +117,30 @@ let inputs =
     { location = { x = x1; y = y1 }
       size = { dx = x2 - x1; dy = y2 - y1 } }
     |> Rect.normalize
+    |> Rect.grow (1, 1)
 
-// printfn "%A" inputs
-
+// Computes the sum of integers [1..x]
 let summatorial x = x * (x + 1) / 2
 
-let height vy step =
-    // = (v - 0) + (v - 1) + (v - 2) + (v - 3) + ...
-    vy * step - (summatorial (step - 1))
+/// Returns the height (delta Y) after so many steps given the initial Y velocity.
+let height (v1: int) steps =
+    // = v1 + (v1 - 1) + (v1 - 2) + (v1 - 3) + ... + (v1 - (steps - 1))
+    // = (v1 * steps) - 0 - 1 - 2 - 3 - ... - (steps - 1)
+    // = (v1 * steps) - (1 + 2 + 3 + ... + (steps - 1))
+    v1 * steps - (summatorial (steps - 1))
 
-let distance vx step =
-    // = (v - 0) + (v - 1) + (v - 2) + (v - 3) + ...
-    // velocity goes to zero after `vx` steps.
-    let step = if step > vx then vx else step
-    vx * step - (summatorial (step - 1))
+/// Returns the distance (delta X) after so many steps given the initial X velocity.
+let rec distance (v1: int) steps =
+    if v1 < 0 then
+        -(distance (Math.Abs(v1)) steps)
+    else
+        // velocity goes to zero after v1 steps.
+        let steps = if steps > v1 then v1 else steps
+        v1 * steps - (summatorial (steps - 1))
 
-/// returns the minimum number of steps to reach the specified distance with velocity 0
-let minSteps dist =
+/// Returns the maximum number of steps to reach the specified distance.
+/// Assumes smallest possible initial X velocity.
+let maxStepsX dist =
     // d = s(s + 1)/2
     // 2d = s^2 + s
     // s^2 + s - 2d = 0
@@ -138,21 +150,20 @@ let minSteps dist =
     let r = Math.Sqrt(1. + 8. * d)
     let s1 = (-1. + r) / 2.
     let s2 = (-1. - r) / 2.
-    Math.Max(s1, s2) |> Math.Floor |> int
 
-/// returns the minimum X velocity needed to reach the specified distance. Any vx less
-/// than the returned value will never reach
-let minV dist =
-    // velocity goes to zero after `s` steps thus minV is s.
-    let s = minSteps dist
-    if distance s s < dist then s + 1 else s
+    // return the smallest positive value
+    if s1 < 0. then s2
+    elif s2 < 0. then s1
+    else Math.Min(s1, s2) // |> Math.Floor |> int
 
-// printfn "%d,%d" (distance 8 20) (height 0 4)
+let target = inputs |> parse
+// printfn "%A" target
 
 let part1 () =
-    let target = inputs
 
-    let minSteps = minSteps target.left
+    let maxStepsX =
+        maxStepsX target.left |> Math.Floor |> int
+
     let maxY1 = Math.Abs(target.bottom) // assuming positive y1
 
     let maxY =
@@ -163,21 +174,51 @@ let part1 () =
             for y1 = 1 to maxY1 - 1 do
                 // assuming positive y1, takes (2 * y1 + 1) steps to return to zero
                 // so the next step is the first below zero.
-                let mutable s = Math.Max(2 * y1 + 1 + 1, minSteps)
+                let mutable s = Math.Max(2 * y1 + 1 + 1, maxStepsX)
                 let mutable y = height y1 s
+
                 while y > target.top do
                     s <- s + 1
                     y <- height y1 s
+
                 if target.bottom <= y && y <= target.top then
                     // hit!
-                    printfn $"y1={y1}: s={s} y={y}, MaxY={height y1 (y1 + 1)}"
+                    //printfn $"y1={y1}: s={s} y={y}, MaxY={height y1 (y1 + 1)}"
                     height y1 (y1 + 1)
         }
         |> Seq.max
 
     printfn "Part 1: %A" (maxY)
 
-let part2 () = printfn "Part 2: "
+let part2 () =
+
+    // 1 step - Can hit every point
+    // 1 step - Can hit every point where (n - summatorial(1-1)) / 1 is an integer
+    // 1 step - Can hit every point where (n - 0) / 1 is an integer
+    let n = target.width * target.height
+    printfn $"1: {n}"
+
+    // 2 steps - Can hit every odd (x,y) point
+    // 2 steps - Can hit every point where (n - summatorial(2-1)) / 2 is an integer
+    // 2 steps - Can hit every point where (n - 1) / 2 is an integer
+    let n =
+        n
+        + (target.width / 2
+           + ((target.width % 2) * (target.left % 2)))
+          * (target.height / 2
+             + ((target.height % 2) * (target.top % 2)))
+
+    printfn $"2: {n}"
+    // 3 steps - Can hit point where (n - summatorial(3-1)) / 3 is an integer
+    // 3 steps - Can hit point where (n - 3) / 3 is an integer
+
+    // 4 steps - Can hit point where (n - summatorial(4-1)) / 4 is an integer
+    // 4 steps - Can hit point where (n - 6) / 4 is an integer
+
+    // 5 steps - Can hit point where (n - summatorial(5-1)) / 5 is an integer
+    // 5 steps - Can hit point where (n - 10) / 5 is an integer
+
+    printfn "Part 2: "
 
 part1 () // 4851
 part2 () //
