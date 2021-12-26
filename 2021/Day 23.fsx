@@ -25,9 +25,27 @@ let inputs =
             .Trim()
             .Split('\n', StringSplitOptions.RemoveEmptyEntries)
 
-    [| for i in [ 3; 5; 7; 9 ] do
-           [| lines.[2].[i]; lines.[3].[i] |] |]
+    lines
 // printfn "%A" inputs
+
+let parseRooms (line: string) =
+    let line = line.TrimStart()
+
+    let line =
+        if line.[1] = '#' then
+            line.Remove(0, 2)
+        else
+            line
+
+    [| line.[1]
+       line.[3]
+       line.[5]
+       line.[7] |]
+
+let parseMap (map: string []) =
+    Seq.zip (parseRooms map.[2]) (parseRooms map.[3])
+    |> Seq.map (fun (a, b) -> [| a; b |])
+    |> Seq.toArray
 
 let energyOf =
     function
@@ -51,11 +69,17 @@ let (|Hall|_|) (s: string) =
 
 let hallwayPosOfRoom r = (r + 1) * 2
 
-// H 01234567890
-//   ...........
-//     . . . .
-//     . . . .
-// R   0 1 2 3
+let printPuzzle (rooms: char [] []) (hallway: char []) =
+    printfn "%s" (String.Concat hallway)
+
+    for i = 0 to (rooms.[0].Length - 1) do
+        printf " "
+
+        for room in rooms do
+            printf " %c" room.[i]
+
+        printfn ""
+
 let move (rooms: char [] []) (hallway: char []) (src, dst) =
     let rec moveR src dst =
         match src, dst with
@@ -64,10 +88,11 @@ let move (rooms: char [] []) (hallway: char []) (src, dst) =
                 failwith $"Hallway {h} is empty."
 
             let room = rooms.[r]
-            let ri = if room.[1] = '.' then 1 else 0
 
-            if room.[ri] <> '.' then
-                failwith $"Room {r} is full: {room.[ri]}."
+            let ri =
+                room
+                |> Seq.tryFindIndexBack ((=) '.')
+                |> Option.defaultWith (fun _ -> failwith $"Room {r} is full.")
 
             let energy = energyOf hallway.[h]
             let distInHallway = Math.Abs(h - (hallwayPosOfRoom r))
@@ -78,10 +103,11 @@ let move (rooms: char [] []) (hallway: char []) (src, dst) =
 
         | Room r, Hall h ->
             let room = rooms.[r]
-            let ri = if room.[0] = '.' then 1 else 0
 
-            if room.[ri] = '.' then
-                failwith $"Room {r} is empty."
+            let ri =
+                room
+                |> Seq.tryFindIndex ((<>) '.')
+                |> Option.defaultWith (fun _ -> failwith $"Room {r} is empty.")
 
             if hallway.[h] <> '.' then
                 failwith $"Hallway {h} is not empty: {hallway.[h]}."
@@ -124,11 +150,17 @@ let move (rooms: char [] []) (hallway: char []) (src, dst) =
     moveR src dst
 
 let part1 () =
-    let rooms = inputs
-    let hallway = Array.create 11 '.'
+    let rooms = inputs |> parseMap
+    let hallway = ".. . . . ..".ToCharArray()
 
     // solved manually
-    let sum =
+    // R   0 1 2 3
+    // H 01 3 5 7 90
+    //   .. . . . ..
+    //     C B D D
+    //     B C A A
+
+    let moves =
         [ "R3", "H9" // 2000
           "R3", "H1" //    9
           "H9", "R3" // 3000
@@ -141,11 +173,44 @@ let part1 () =
           "R0", "R1" //   50
           "H1", "R0" //    3
           "H7", "R0" ] //  6
-        |> Seq.sumBy (move rooms hallway)
+
+    let sum = moves |> Seq.sumBy (move rooms hallway)
 
     printfn "Part 1: %d" sum
+    // printPuzzle rooms hallway
+    // printfn ""
 
-let part2 () = printfn "Part 2: "
+let part2 () =
+
+    let hallway = ".. . . . ..".ToCharArray()
+    let extraRooms1 = parseRooms "#D#C#B#A#"
+    let extraRooms2 = parseRooms "#D#B#A#C#"
+
+    let rooms =
+        inputs
+        |> parseMap
+        |> Array.mapi (fun i r ->
+            [| r.[0]
+               extraRooms1.[i]
+               extraRooms2.[i]
+               r.[1] |])
+
+    printPuzzle rooms hallway
+    printfn ""
+
+    // R   0 1 2 3
+    // H 01 3 5 7 90
+    //   .. . . . ..
+    //     C B D D
+    //     D C B A
+    //     D B A C
+    //     B C A A
+
+    let moves = []
+
+    let sum = moves |> Seq.sumBy (move rooms hallway)
+
+    printfn "Part 2: %d" sum
 
 part1 () // 10321
 part2 () //
