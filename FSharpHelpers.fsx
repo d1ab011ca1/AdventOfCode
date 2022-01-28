@@ -1,6 +1,4 @@
 open System
-open System.Text
-open System.Text.RegularExpressions
 
 let trace x =
 #if INTERACTIVE
@@ -14,9 +12,9 @@ let trace x =
 let summatorial n = (n * (n + 1)) / 2
 
 /// Returns `(b, a)` if the `condition` is true, otherwise `(a, b)`.
-let swapIf condition a b = if condition then (b, a) else (a, b)
+let inline swapIf condition a b = if condition then (b, a) else (a, b)
 /// Returns `(b, a)` if the `conditionf` returns true, otherwise `(a, b)`.
-let swapWhen conditionf a b =
+let inline swapWhen conditionf a b =
     if conditionf () then (b, a) else (a, b)
 
 /// Converts the given digit character ('0'..'9') to its numeric equivalent (0..9).
@@ -37,87 +35,91 @@ let (|DecChar|) = digitToInt
 let (|HexChar|) = hexDigitToInt
 
 module String =
+    open System.Text.RegularExpressions
+
     let comparer = StringComparer.Ordinal
     let compareri = StringComparer.OrdinalIgnoreCase
-    let compare a b = comparer.Compare(a, b)
-    let comparei a b = compareri.Compare(a, b)
-    let equal a b = compare a b = 0
-    let equali a b = comparei a b = 0
-    let startsWith (prefix: string) (s: string) = s.StartsWith(prefix)
+    let inline compare a b = comparer.Compare(a, b)
+    let inline comparei a b = compareri.Compare(a, b)
+    let inline equal a b = compare a b = 0
+    let inline equali a b = comparei a b = 0
+    let inline startsWith (prefix: string) (s: string) = s.StartsWith(prefix)
 
-    let substr idx max (s: string) =
+    let inline substr idx max (s: string) =
         if max > s.Length - idx then
             s.Substring(idx, -1)
         else
             s.Substring(idx, max)
 
-    let left max (s: string) = substr 0 max s
+    let inline left max (s: string) = substr 0 max s
 
-    let right max (s: string) =
-        s.Substring(
-            if max < s.Length then
-                s.Length - max
-            else
-                0
-        )
+    let inline right max (s: string) =
+        if max < s.Length then
+            s.Substring(s.Length - max)
+        else
+            s
 
-    let toArray (s: string) = s.ToCharArray()
+    let inline toArray (s: string) = s.ToCharArray()
+    let inline toSeq (s: string) : char seq = s
 
-    let trim (s: string) = s.Trim()
-    let trimL (s: string) = s.TrimStart()
-    let trimR (s: string) = s.TrimEnd()
+    let inline trim (s: string) = s.Trim()
+    let inline trimL (s: string) = s.TrimStart()
+    let inline trimR (s: string) = s.TrimEnd()
 
-    let padL c totalWidth (s: string) = s.PadLeft(c, totalWidth)
-    let padR c totalWidth (s: string) = s.PadRight(c, totalWidth)
+    let inline padL c totalWidth (s: string) = s.PadLeft(c, totalWidth)
+    let inline padR c totalWidth (s: string) = s.PadRight(c, totalWidth)
 
-    let split (sep: string) (s: string) = s.Split(sep)
-    let splitN (sep: string) count (s: string) = s.Split(sep, count = count)
-    let splitO (sep: string) opts (s: string) = s.Split(sep, options = opts)
-
-    let splitNO (sep: string) count opts (s: string) =
+    /// Split a string using the given delimiter.
+    let inline split (sep: string) (s: string) = s.Split(sep)
+    /// Split a string into at most `count` parts.
+    let inline splitN (sep: string) count (s: string) = s.Split(sep, count = count)
+    /// Split a string using the given `StringSplit` options.
+    let inline splitO (sep: string) opts (s: string) = s.Split(sep, options = opts)
+    /// Split a string into at most `count` parts using the given `StringSplit` options.
+    let inline splitNO (sep: string) count opts (s: string) =
         s.Split(sep, count = count, options = opts)
 
-    let splitRE (re: Regex) (s: string) = re.Split(s)
+    /// Split a string using the given regular expression as a delimter.
+    let inline splitRE (re: Regex) (s: string) = re.Split(s)
 
-    let replace (oldValue: string) newValue (s: string) =
+    let inline replace (oldValue: string) newValue (s: string) =
         s.Replace(oldValue, newValue, StringComparison.Ordinal)
 
-    let replacei (oldValue: string) newValue (s: string) =
+    let inline replacei (oldValue: string) newValue (s: string) =
         s.Replace(oldValue, newValue, StringComparison.OrdinalIgnoreCase)
 
-    let replaceRE (re: Regex) replacement (s: string) =
+    let inline replaceRE (re: Regex) replacement (s: string) =
         re.Replace(s, replacement = replacement)
 
-    let replaceREWith (re: Regex) evaluator (s: string) =
+    let inline replaceREWith (re: Regex) evaluator (s: string) =
         re.Replace(s, MatchEvaluator(evaluator))
 
-    let tryMatch (re: Regex) (s: string) =
+    let inline tryMatch (re: Regex) (s: string) =
         match re.Match(s) with
         | m when m.Success -> Some m.Groups
         | _ -> None
 
 module StringBuilder =
-    let append (x: string) (sb: StringBuilder) =
-        sb.Append(x)
+    open System.Text
 
-    let appendLine (x: string) (sb: StringBuilder) =
-        sb.AppendLine(x)
+    let inline append (x: string) (sb: StringBuilder) = sb.Append(x)
 
-    let appendFmt (fmt:string) (x: string) (sb: StringBuilder) =
-        sb.AppendFormat(fmt, x)
+    let inline appendLine (x: string) (sb: StringBuilder) = sb.AppendLine(x)
+
+    let inline appendFmt (fmt: string) (x: string) (sb: StringBuilder) = sb.AppendFormat(fmt, x)
 
 module Int32 =
-    let toString toBase (num: Int32) = Convert.ToString(num, toBase = toBase)
-    let fromString fromBase (s: string) = Convert.ToInt32(s, fromBase = fromBase)
+    let inline toString toBase (num: Int32) = Convert.ToString(num, toBase = toBase)
+    let inline fromString fromBase (s: string) = Convert.ToInt32(s, fromBase = fromBase)
 
 module Int64 =
-    let toString toBase (num: Int64) = Convert.ToString(num, toBase = toBase)
-    let fromString fromBase (s: string) = Convert.ToInt64(s, fromBase = fromBase)
+    let inline toString toBase (num: Int64) = Convert.ToString(num, toBase = toBase)
+    let inline fromString fromBase (s: string) = Convert.ToInt64(s, fromBase = fromBase)
 
 module Array =
     let private rand = new Random()
 
-    let shuffle a =
+    let inline shuffle a =
         a
         |> Array.sortBy (fun _ -> rand.Next(0, a.Length))
 
@@ -125,12 +127,14 @@ module Array =
 /// Returns the path of the file containing puzzle input.
 let getInputFilePath () =
 #if INTERACTIVE
-    let thisFilePath = fsi.CommandLineArgs.[0]
+    let thisFilePath = fsi.CommandLineArgs[0]
 #else
     let thisFilePath = LINQPad.Util.CurrentQueryPath
 #endif
     IO.Path.ChangeExtension(thisFilePath, ".txt")
 
+/// Splits a string of text into an array of individual lines (delimited by `\n`).
+/// All lines are trimmed and empty lines and discarded.
 let parseInputText (text: string) =
     text
     |> String.splitO
@@ -138,30 +142,40 @@ let parseInputText (text: string) =
         (StringSplitOptions.TrimEntries
          ||| StringSplitOptions.RemoveEmptyEntries)
 
+/// Converts a collection of strings into an array of character arrays.
 let toCharArrays (strings: string seq) =
     strings |> Seq.map String.toArray |> Seq.toArray
 
+/// Splits a collection of strings into an array of word arrays. Words are
+/// delimited by spaces (one or more).
 let toWordArrays (strings: string seq) =
     strings
-    |> Seq.map (String.split " ")
+    |> Seq.map (String.splitO " " StringSplitOptions.RemoveEmptyEntries)
     |> Seq.toArray
 
-let toGroups groupPrefix (strings: string []) =
-    [ let mutable idx = 0
+/// Splits a collection of strings into groups of strings. Each group begins
+/// with a string matching the specified prefix.
+let toGroups groupPrefix (strings: string seq) =
+    let strings = strings |> Seq.toArray
 
-      while idx < strings.Length do
-          let groupName = strings.[idx]
+    if
+        strings.Length > 0
+        && not (strings[1] |> String.startsWith groupPrefix)
+    then
+        failwithf "Unexpected group header: %s" strings[1]
 
-          if not (groupName |> String.startsWith groupPrefix) then
-              failwithf "Unexpected group header: %s" groupName
+    let mutable idx = 0
+
+    [ while idx < strings.Length do
+          let groupName = strings[idx]
 
           idx <- idx + 1
 
           groupName,
           [ while idx < strings.Length
-                  && not (strings.[idx] |> String.startsWith groupPrefix) do
+                  && not (strings[idx] |> String.startsWith groupPrefix) do
 
-                strings.[idx]
+                strings[idx]
 
                 idx <- idx + 1 ] ]
 
@@ -240,29 +254,35 @@ module Tree =
 
                 subnodes
                 |> Seq.iteri (fun i n ->
-                    if i > 0 then sb |> StringBuilder.append "," |> ignore
+                    if i > 0 then
+                        sb |> StringBuilder.append "," |> ignore
+
                     stringize sb n)
 
                 sb |> StringBuilder.append "]" |> ignore
             | Value v -> sb.Append(sprintf "%A" v) |> ignore
 
-        let sb = StringBuilder()
+        let sb = Text.StringBuilder()
         stringize sb n
         sb.ToString()
 
 /// A basic 2-dimensional point.
+[<NoComparison>]
+[<StructAttribute>]
 type Point2D =
     { x: int
       y: int }
     override this.ToString() = $"({this.x},{this.y})"
 
     static member zero = { x = 0; y = 0 }
-    static member ofTuple(x, y) = { x = x; y = y }
-    static member toTuple pt = (pt.x, pt.y)
+    static member inline ofTuple(x, y) = { x = x; y = y }
+    static member inline toTuple pt = (pt.x, pt.y)
 
-    static member offset (dx, dy) pt = { x = pt.x + dx; y = pt.y + dy }
+    static member inline offset (dx, dy) pt = { x = pt.x + dx; y = pt.y + dy }
 
 /// A basic 3-dimensional point.
+[<NoComparison>]
+[<StructAttribute>]
 type Point3D =
     { x: int
       y: int
@@ -270,15 +290,17 @@ type Point3D =
     override this.ToString() = $"({this.x},{this.y},{this.z})"
 
     static member zero = { x = 0; y = 0; z = 0 }
-    static member ofTuple(x, y, z) = { x = x; y = y; z = z }
-    static member toTuple pt = (pt.x, pt.y, pt.z)
+    static member inline ofTuple(x, y, z) = { x = x; y = y; z = z }
+    static member inline toTuple pt = (pt.x, pt.y, pt.z)
 
-    static member offset (dx, dy, dz) pt =
+    static member inline offset (dx, dy, dz) pt =
         { x = pt.x + dx
           y = pt.y + dy
           z = pt.z + dz }
 
 /// A rectangle type.
+[<NoComparison>]
+[<StructAttribute>]
 type Rect =
     { p1: Point2D // the "smaller" point
       p2: Point2D } // the "larger" point
@@ -293,29 +315,29 @@ type Rect =
 
     static member empty = { p1 = Point2D.zero; p2 = Point2D.zero }
 
-    static member isEmpty(c: Rect) = c.width = 0 || c.height = 0
+    static member inline isEmpty(c: Rect) = c.width = 0 || c.height = 0
 
     /// Creates a normalized rect with the given points
-    static member fromPoints p1 p2 = { p1 = p1; p2 = p2 } |> Rect.normalize
+    static member inline fromPoints p1 p2 = { p1 = p1; p2 = p2 } |> Rect.normalize
 
     /// Creates a normalized Rect with the given points
-    static member fromCoords xy1 xy2 =
+    static member inline fromCoords xy1 xy2 =
         Rect.fromPoints (Point2D.ofTuple xy1) (Point2D.ofTuple xy2)
 
-    static member dims(c: Rect) = (c.width, c.height)
+    static member inline dims(c: Rect) = (c.width, c.height)
 
     /// Returns volume of a rect.
-    static member volume(c: Rect) =
+    static member inline volume(c: Rect) =
         Math.Abs(int64 c.width * int64 c.height)
 
     /// Offsets the rect by offsetting both p1 and p2.
-    static member offset (dx, dy) c : Rect =
+    static member inline offset (dx, dy) c : Rect =
         { c with
             p1 = c.p1 |> Point2D.offset (dx, dy)
             p2 = c.p2 |> Point2D.offset (dx, dy) }
 
     /// Grows the rect by offsetting p2.
-    static member grow (dx, dy) c : Rect =
+    static member inline grow (dx, dy) c : Rect =
         { c with p2 = c.p2 |> Point2D.offset (dx, dy) }
 
     /// Returns a Rect with positive size in all dims (p1.xy <= p2.xy).
@@ -339,7 +361,7 @@ type Rect =
         if Rect.isEmpty c then Rect.empty else c
 
     /// Checks if point intersects a Rect. Rect must be normalized.
-    static member contains pt (c: Rect) =
+    static member inline contains pt (c: Rect) =
         c.left <= pt.x
         && pt.x < c.right
         && c.bottom <= pt.y
@@ -352,8 +374,8 @@ type Rect =
         let y1, y2 =
             (c1, c2) ||> swapIf (c2.bottom < c1.bottom)
 
-        let min a b = if a < b then a else b
-        let max a b = if a > b then a else b
+        let inline min a b = if a < b then a else b
+        let inline max a b = if a > b then a else b
 
         { p1 =
             { x = min x1.left x2.left
@@ -369,7 +391,7 @@ type Rect =
         let y1, y2 =
             (c1, c2) ||> swapIf (c2.bottom < c1.bottom)
 
-        let min a b = if a < b then a else b
+        let inline min a b = if a < b then a else b
 
         // must intersect in all 3 dims
         if x2.left < x1.right && y2.bottom < y1.top then
@@ -380,7 +402,7 @@ type Rect =
         else
             Rect.empty
 
-    static member intersects c1 c2 =
+    static member inline intersects c1 c2 =
         not (Rect.intersection c1 c2 |> Rect.isEmpty)
 
     /// Returns `a` minus the intersection of `b`, or `None` if there is no intersection.
@@ -409,6 +431,8 @@ type Rect =
             |> Some
 
 /// A cube type.
+[<NoComparison>]
+[<StructAttribute>]
 type Cube =
     { p1: Point3D // the "smaller" point
       p2: Point3D } // the "larger" point
@@ -426,30 +450,30 @@ type Cube =
 
     static member empty = { p1 = Point3D.zero; p2 = Point3D.zero }
 
-    static member isEmpty(c: Cube) =
+    static member inline isEmpty(c: Cube) =
         c.width = 0 || c.height = 0 || c.depth = 0
 
     /// Creates a normalized cube with the given points
-    static member fromPoints p1 p2 = { p1 = p1; p2 = p2 } |> Cube.normalize
+    static member inline fromPoints p1 p2 = { p1 = p1; p2 = p2 } |> Cube.normalize
 
     /// Creates a normalized cube with the given points
-    static member fromCoords xyz1 xyz2 =
+    static member inline fromCoords xyz1 xyz2 =
         Cube.fromPoints (Point3D.ofTuple xyz1) (Point3D.ofTuple xyz2)
 
-    static member dims(c: Cube) = (c.width, c.height, c.depth)
+    static member inline dims(c: Cube) = (c.width, c.height, c.depth)
 
     /// Returns volume of a cube.
-    static member volume(c: Cube) =
+    static member inline volume(c: Cube) =
         Math.Abs(int64 c.width * int64 c.height * int64 c.depth)
 
     /// Offsets the cube by offsetting both p1 and p2.
-    static member offset (dx, dy, dz) c : Cube =
+    static member inline offset (dx, dy, dz) c : Cube =
         { c with
             p1 = c.p1 |> Point3D.offset (dx, dy, dz)
             p2 = c.p2 |> Point3D.offset (dx, dy, dz) }
 
     /// Grows the cube by offsetting p2.
-    static member grow (dx, dy, dz) c : Cube =
+    static member inline grow (dx, dy, dz) c : Cube =
         { c with p2 = c.p2 |> Point3D.offset (dx, dy, dz) }
 
     /// Returns a Cube with positive size in all 3 dims (p1.xyz <= p2.xyz).
@@ -481,7 +505,7 @@ type Cube =
         if Cube.isEmpty c then Cube.empty else c
 
     /// Checks if point intersects a cube. Cube must be normalized.
-    static member contains pt (c: Cube) =
+    static member inline contains pt (c: Cube) =
         c.left <= pt.x
         && pt.x < c.right
         && c.bottom <= pt.y
@@ -498,8 +522,8 @@ type Cube =
 
         let z1, z2 = (c1, c2) ||> swapIf (c2.back < c1.back)
 
-        let min a b = if a < b then a else b
-        let max a b = if a > b then a else b
+        let inline min a b = if a < b then a else b
+        let inline max a b = if a > b then a else b
 
         { p1 =
             { x = min x1.left x2.left
@@ -519,7 +543,7 @@ type Cube =
 
         let z1, z2 = (c1, c2) ||> swapIf (c2.back < c1.back)
 
-        let min a b = if a < b then a else b
+        let inline min a b = if a < b then a else b
 
         // must intersect in all 3 dims
         if x2.left < x1.right
@@ -536,7 +560,7 @@ type Cube =
         else
             Cube.empty
 
-    static member intersects c1 c2 =
+    static member inline intersects c1 c2 =
         not (Cube.intersection c1 c2 |> Cube.isEmpty)
 
     /// Returns `a` minus the intersection of `b`, or `None` if there is no intersection.
