@@ -39,28 +39,40 @@ module String =
 
     let comparer = StringComparer.Ordinal
     let compareri = StringComparer.OrdinalIgnoreCase
+
+    let inline len (s: string) = s.Length
+
+    let inline isBlank s = String.IsNullOrWhiteSpace s
+    let inline isEmpty s = String.IsNullOrEmpty s
     let inline compare a b = comparer.Compare(a, b)
     let inline comparei a b = compareri.Compare(a, b)
     let inline equal a b = compare a b = 0
     let inline equali a b = comparei a b = 0
     let inline startsWith (prefix: string) (s: string) = s.StartsWith(prefix)
+    let inline endsWith (suffix: string) (s: string) = s.EndsWith(suffix)
+    let inline indexOf (x: string) (s: string) = s.IndexOf(x)
+    let inline contains (x: string) (s: string) = s.Contains(x, StringComparison.Ordinal)
+    let inline containsi (x: string) (s: string) = s.Contains(x, StringComparison.OrdinalIgnoreCase)
 
     let inline substr idx max (s: string) =
-        if max > s.Length - idx then
-            s.Substring(idx, -1)
-        else
+        if 0 <= max && max < s.Length - idx then
             s.Substring(idx, max)
+        else
+            s.Substring(idx)
 
     let inline left max (s: string) = substr 0 max s
 
     let inline right max (s: string) =
-        if max < s.Length then
+        if 0 <= max && max < s.Length then
             s.Substring(s.Length - max)
         else
             s
 
     let inline toArray (s: string) = s.ToCharArray()
-    let inline toSeq (s: string) : char seq = s
+    let inline toSeq (s: string) : char seq = s :> _
+
+    let inline toUpper (s: string) = s.ToUpperInvariant()
+    let inline toLower (s: string) = s.ToLowerInvariant()
 
     let inline trim (s: string) = s.Trim()
     let inline trimL (s: string) = s.TrimStart()
