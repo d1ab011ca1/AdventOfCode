@@ -129,11 +129,9 @@ module Int64 =
     let inline fromString fromBase (s: string) = Convert.ToInt64(s, fromBase = fromBase)
 
 module Array =
-    let private rand = new Random()
-
     let inline shuffle a =
         a
-        |> Array.sortBy (fun _ -> rand.Next(0, a.Length))
+        |> Array.sortBy (fun _ -> Random.Shared.Next(0, a.Length))
 
 
 /// Returns the path of the file containing puzzle input.

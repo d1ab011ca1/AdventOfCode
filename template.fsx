@@ -1,6 +1,6 @@
-// https://adventofcode.com/2021
+// https://adventofcode.com/2022
 #if INTERACTIVE
-#load "FSharpHelpers.fsx"
+#load "../FSharpHelpers.fsx"
 #r "nuget: MathNet.Numerics.FSharp" // https://numerics.mathdotnet.com/api/
 #r "nuget: FSharp.Collections.ParallelSeq"
 #endif
