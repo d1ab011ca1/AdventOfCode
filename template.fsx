@@ -15,9 +15,8 @@ let sampleInputText1 =
     """
 """
 
-let inputText =
-    // File.ReadAllText(getInputFilePath ())
-    sampleInputText1
+// let inputText = File.ReadAllText(getInputFilePath ())
+let inputText = sampleInputText1
 
 let parseInput (text: string) =
     let lines: string[] = text |> parseInputText
