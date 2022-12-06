@@ -5,7 +5,7 @@
 #r "nuget: FSharp.Collections.ParallelSeq"
 #endif
 
-open System.IO
+open System
 open FSharpHelpers
 
 let sampleInputText1 =
@@ -13,22 +13,22 @@ let sampleInputText1 =
 mjqjpqmgbljsphdztnvjfqwrcgsmlb
 """
 
-let inputText = File.ReadAllText(getInputFilePath ())
+let cookie = IO.File.ReadAllText("cookie.txt")
+let inputText = downloadInput cookie
 // let inputText = sampleInputText1
 
-let parseInput (text: string) =
-    text.Trim()
+let parseInput (text: string) = text.Trim()
 
 let inputs = inputText |> parseInput
 printfn "%A" inputs
 
 let find len =
-        inputs 
-        |> Seq.windowed len
-        |> Seq.mapi (fun i w -> i+len, w)
-        |> Seq.where (fun (_, w) -> w |> Seq.distinct |> Seq.length = len)
-        |> Seq.head
-        |> fst
+    inputs
+    |> Seq.windowed len
+    |> Seq.mapi (fun i w -> i + len, w)
+    |> Seq.where (fun (_, w) -> w |> Seq.distinct |> Seq.length = len)
+    |> Seq.head
+    |> fst
 
 let part1 () =
     let n = find 4

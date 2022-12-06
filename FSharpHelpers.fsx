@@ -133,6 +133,27 @@ module Array =
         a
         |> Array.sortBy (fun _ -> Random.Shared.Next(0, a.Length))
 
+/// Returns the year and day #. Assumes script file is named "...\\{Year}\\Day {day}.fsi".
+let yearAndDay () =
+#if INTERACTIVE
+    let thisFilePath = fsi.CommandLineArgs[0]
+#else
+    let thisFilePath = LINQPad.Util.CurrentQueryPath
+#endif
+    let f = IO.FileInfo(thisFilePath)
+    f.Directory.Name |> int,
+    IO.Path.GetFileNameWithoutExtension(f.Name)
+    |> String.split " "
+    |> Array.last
+    |> int
+
+let downloadInput (cookie: string) = 
+    let year,day = yearAndDay ()
+    use client = new System.Net.Http.HttpClient()
+    client.DefaultRequestHeaders.Add("cookie", cookie.Trim())
+    client.GetStringAsync($"https://adventofcode.com/{year}/day/{day}/input") 
+    |> Async.AwaitTask 
+    |> Async.RunSynchronously
 
 /// Returns the path of the file containing puzzle input.
 let getInputFilePath () =

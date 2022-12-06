@@ -6,12 +6,9 @@
 #endif
 
 open System
-open System.IO
 open FSharpHelpers
 open System.Text.RegularExpressions
 open System.Collections.Generic
-// open MathNet.Numerics
-// open FSharp.Collections.ParallelSeq
 
 let sampleInputText1 =
     """
@@ -26,7 +23,8 @@ move 2 from 2 to 1
 move 1 from 1 to 2
 """
 
-let inputText, depth, width = File.ReadAllText(getInputFilePath ()), 8, 9
+let cookie = IO.File.ReadAllText("cookie.txt")
+let inputText, depth, width = downloadInput cookie, 8, 9
 // let inputText,depth,width = sampleInputText1,3,3
 
 let parseInput (text: string) =

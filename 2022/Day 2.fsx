@@ -6,10 +6,7 @@
 #endif
 
 open System
-open System.IO
 open FSharpHelpers
-// open MathNet.Numerics
-// open FSharp.Collections.ParallelSeq
 
 let sampleInputText1 =
     """
@@ -18,7 +15,8 @@ B X
 C Z
 """
 
-let inputText = File.ReadAllText(getInputFilePath ())
+let cookie = IO.File.ReadAllText("cookie.txt")
+let inputText = downloadInput cookie
 //let inputText = sampleInputText1
 
 let parseInput (text: string) =

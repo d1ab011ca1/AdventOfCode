@@ -6,16 +6,15 @@
 #endif
 
 open System
-open System.IO
 open FSharpHelpers
 // open MathNet.Numerics
 // open FSharp.Collections.ParallelSeq
 
-let sampleInputText1 =
-    """
+let sampleInputText1 = """
 """
 
-// let inputText = File.ReadAllText(getInputFilePath ())
+let cookie = IO.File.ReadAllLines ("cookie.txt") |> Array.head
+// let inputText = downloadInput cookie
 let inputText = sampleInputText1
 
 let parseInput (text: string) =
