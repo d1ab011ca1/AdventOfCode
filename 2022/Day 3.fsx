@@ -18,8 +18,7 @@ ttgJtRGJQctTZtZT
 CrZsJsPPZsGzwwsLwLmpwMDw
 """
 
-let cookie = IO.File.ReadAllText("cookie.txt")
-let inputText = downloadInput cookie
+let inputText = downloadInput ()
 // let inputText = sampleInputText1
 
 let parseInput (text: string) = text |> parseInputText

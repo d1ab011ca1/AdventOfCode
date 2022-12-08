@@ -14,7 +14,7 @@ let sampleInputText1 =
     """
 """
 
-let inputText = downloadInput ()
+// let inputText = downloadInput ()
 let inputText = sampleInputText1
 
 let parseInput (text: string) =

@@ -17,8 +17,7 @@ let sampleInputText1 =
 35390
 """
 
-let cookie = IO.File.ReadAllLines("cookie.txt") |> Array.head
-let inputText = downloadInput cookie
+let inputText = downloadInput ()
 // let inputText = sampleInputText1
 
 let parseInput (text: string) =
@@ -76,6 +75,7 @@ let part1 () =
     //     printfn ""
 
     let mutable count = 0
+
     for y = 0 to height - 1 do
         for x = 0 to width - 1 do
             if bm[y][x] = '#' then
@@ -92,29 +92,38 @@ let part2 () =
 
             // up (y-1..0)
             let mutable y' = y - 1
+
             while y' >= 0 && inputs[y'][x] < max do
                 y' <- y' - 1
+
             let up = y - Math.Max(y', 0)
 
             // left (x-1..0)
             let mutable x' = x - 1
+
             while x' >= 0 && inputs[y][x'] < max do
                 x' <- x' - 1
+
             let left = x - Math.Max(x', 0)
 
             // down (y+1..height]
             let mutable y' = y + 1
+
             while y' < height && inputs[y'][x] < max do
                 y' <- y' + 1
+
             let down = Math.Min(y', height - 1) - y
 
             // right (x+1..width]
             let mutable x' = x + 1
+
             while x' < width && inputs[y][x'] < max do
                 x' <- x' + 1
+
             let right = Math.Min(x', width - 1) - x
 
             let score = down * up * left * right
+
             if score > maxscore then
                 //printfn $"{(x,y)}: {score} (u={up}, l={left}, d={down}, r={right})"
                 maxscore <- score

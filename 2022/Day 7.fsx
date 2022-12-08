@@ -38,8 +38,7 @@ $ ls
 7214296 k
 """
 
-let cookie = IO.File.ReadAllText("cookie.txt")
-let inputText = downloadInput cookie
+let inputText = downloadInput ()
 // let inputText = sampleInputText1
 
 type Op =

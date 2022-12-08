@@ -133,23 +133,28 @@ module Array =
         a
         |> Array.sortBy (fun _ -> Random.Shared.Next(0, a.Length))
 
-/// Returns the year and day #. Assumes script file is named "...\\{Year}\\Day {day}.fsi".
-let yearAndDay () =
+let scriptPath =
 #if INTERACTIVE
-    let thisFilePath = fsi.CommandLineArgs[0]
+    fsi.CommandLineArgs[0]
 #else
-    let thisFilePath = LINQPad.Util.CurrentQueryPath
+    LINQPad.Util.CurrentQueryPath
 #endif
-    let f = IO.FileInfo(thisFilePath)
-    f.Directory.Name |> int,
-    IO.Path.GetFileNameWithoutExtension(f.Name)
-    |> String.split " "
-    |> Array.last
-    |> int
 
-let downloadInput (cookie: string) = 
-    let year,day = yearAndDay ()
-    use client = new System.Net.Http.HttpClient()
+/// Downloads puzzle input as a string. 
+/// Assumes script file is named "./{Year}/Day {day}.fsx" and 
+/// cookie.txt exists in repo root.
+let downloadInput () =
+    let fi = IO.FileInfo(scriptPath)
+    let year = fi.Directory.Name |> int
+    let day = 
+        IO.Path.GetFileNameWithoutExtension(fi.Name)
+        |> String.split " "
+        |> Array.last
+        |> int
+    let cookiePath = IO.Path.Join(fi.Directory.Parent.FullName, "cookie.txt")
+    let cookie = IO.File.ReadAllLines(cookiePath)[0]
+ 
+    use client = new Net.Http.HttpClient()
     client.DefaultRequestHeaders.Add("cookie", cookie.Trim())
     client.GetStringAsync($"https://adventofcode.com/{year}/day/{day}/input") 
     |> Async.AwaitTask 
@@ -157,12 +162,7 @@ let downloadInput (cookie: string) =
 
 /// Returns the path of the file containing puzzle input.
 let getInputFilePath () =
-#if INTERACTIVE
-    let thisFilePath = fsi.CommandLineArgs[0]
-#else
-    let thisFilePath = LINQPad.Util.CurrentQueryPath
-#endif
-    IO.Path.ChangeExtension(thisFilePath, ".txt")
+    IO.Path.ChangeExtension(scriptPath, ".txt")
 
 /// Splits a string of text into an array of individual lines (delimited by `\n`).
 /// All lines are trimmed and empty lines and discarded.
