@@ -17,7 +17,7 @@ let sampleInputText1 =
 35390
 """
 
-let inputText = downloadInput ()
+let inputText = getInput ()
 // let inputText = sampleInputText1
 
 let parseInput (text: string) =

@@ -18,7 +18,7 @@ let sampleInputText1 =
 2-6,4-8
 """
 
-let inputText = downloadInput ()
+let inputText = getInput ()
 // let inputText = sampleInputText1
 
 let parseInput (text: string) =

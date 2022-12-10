@@ -38,7 +38,7 @@ $ ls
 7214296 k
 """
 
-let inputText = downloadInput ()
+let inputText = getInput ()
 // let inputText = sampleInputText1
 
 type Op =

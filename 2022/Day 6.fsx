@@ -13,7 +13,7 @@ let sampleInputText1 =
 mjqjpqmgbljsphdztnvjfqwrcgsmlb
 """
 
-let inputText = downloadInput ()
+let inputText = getInput ()
 // let inputText = sampleInputText1
 
 let parseInput (text: string) = text.Trim()

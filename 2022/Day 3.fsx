@@ -18,7 +18,7 @@ ttgJtRGJQctTZtZT
 CrZsJsPPZsGzwwsLwLmpwMDw
 """
 
-let inputText = downloadInput ()
+let inputText = getInput ()
 // let inputText = sampleInputText1
 
 let parseInput (text: string) = text |> parseInputText

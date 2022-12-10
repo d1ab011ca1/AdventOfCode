@@ -23,7 +23,7 @@ move 2 from 2 to 1
 move 1 from 1 to 2
 """
 
-let inputText, depth, width = downloadInput (), 8, 9
+let inputText, depth, width = getInput (), 8, 9
 // let inputText,depth,width = sampleInputText1,3,3
 
 let parseInput (text: string) =

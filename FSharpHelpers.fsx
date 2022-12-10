@@ -164,6 +164,14 @@ let downloadInput () =
 let getInputFilePath () =
     IO.Path.ChangeExtension(scriptPath, ".txt")
 
+/// Returns the path of the file containing puzzle input.
+let getInput () =
+    let inputFilePath = getInputFilePath ()
+    if not (IO.File.Exists(inputFilePath)) then
+        let input = downloadInput()
+        IO.File.WriteAllText(inputFilePath, input)
+    IO.File.ReadAllText(inputFilePath)
+
 /// Splits a string of text into an array of individual lines (delimited by `\n`).
 /// All lines are trimmed and empty lines and discarded.
 let parseInputText (text: string) =
@@ -298,7 +306,6 @@ module Tree =
         sb.ToString()
 
 /// A basic 2-dimensional point.
-[<NoComparison>]
 [<StructAttribute>]
 type Point2D =
     { x: int
@@ -312,7 +319,6 @@ type Point2D =
     static member inline offset (dx, dy) pt = { x = pt.x + dx; y = pt.y + dy }
 
 /// A basic 3-dimensional point.
-[<NoComparison>]
 [<StructAttribute>]
 type Point3D =
     { x: int
