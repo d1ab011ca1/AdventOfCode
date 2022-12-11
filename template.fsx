@@ -7,15 +7,6 @@
 
 open System
 open FSharpHelpers
-// open MathNet.Numerics
-// open FSharp.Collections.ParallelSeq
-
-let sampleInputText1 =
-    """
-"""
-
-let inputText = downloadInput ()
-let inputText = sampleInputText1
 
 let parseInput (text: string) =
     let lines: string[] = text |> parseInputText
@@ -26,12 +17,21 @@ let parseInput (text: string) =
 
     lines
 
-let inputs = inputText |> parseInput
-printfn "%A" inputs
+let part1 (inputs: string[]) =
+    printfn "%A" inputs
+    0
 
-let part1 () = printfn "Part 1: "
+let part2 (inputs: string[]) = 0
 
-let part2 () = printfn "Part 2: "
+let sampleInputText1 =
+    """
+"""
 
-part1 () //
-part2 () //
+[ sampleInputText1
+  // getInput ()
+  ]
+|> Seq.iteri (fun inputNo inputText ->
+    let input = inputText |> parseInput
+    printfn "Input %d Part 1: %O" inputNo (part1 input) //
+    printfn "Input %d Part 2: %O" inputNo (part2 input) //
+    printfn "")
