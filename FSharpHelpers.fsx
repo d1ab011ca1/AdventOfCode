@@ -339,8 +339,8 @@ type Point3D =
 [<NoComparison>]
 [<StructAttribute>]
 type Rect =
-    { p1: Point2D // the "smaller" point
-      p2: Point2D } // the "larger" point
+    { p1: Point2D // the "smaller" point, inclusive
+      p2: Point2D } // the "larger" point, exclusive
     override this.ToString() = $"[{this.p1}..{this.p2})"
 
     member this.left = this.p1.x
@@ -380,18 +380,18 @@ type Rect =
     /// Returns a Rect with positive size in all dims (p1.xy <= p2.xy).
     static member normalize(c: Rect) =
         let c =
-            if c.right < c.left then
+            if c.p1.x > c.p2.x then
                 { c with
-                    p1 = { c.p1 with x = c.right }
-                    p2 = { c.p2 with x = c.left } }
+                    p1 = { c.p1 with x = c.p2.x - 1 }
+                    p2 = { c.p2 with x = c.p1.x + 1 } }
             else
                 c
 
         let c =
-            if c.top < c.bottom then
+            if c.p1.y > c.p2.y then
                 { c with
-                    p1 = { c.p1 with y = c.top }
-                    p2 = { c.p2 with y = c.bottom } }
+                    p1 = { c.p1 with y = c.p2.y - 1 }
+                    p2 = { c.p2 with y = c.p1.y + 1 } }
             else
                 c
 
@@ -471,8 +471,8 @@ type Rect =
 [<NoComparison>]
 [<StructAttribute>]
 type Cube =
-    { p1: Point3D // the "smaller" point
-      p2: Point3D } // the "larger" point
+    { p1: Point3D // the "smaller" point, inclusive
+      p2: Point3D } // the "larger" point, exclusive
     override this.ToString() = $"[{this.p1}..{this.p2})"
 
     member this.left = this.p1.x
@@ -516,26 +516,26 @@ type Cube =
     /// Returns a Cube with positive size in all 3 dims (p1.xyz <= p2.xyz).
     static member normalize(c: Cube) =
         let c =
-            if c.right < c.left then
+            if c.p1.x > c.p2.x then
                 { c with
-                    p1 = { c.p1 with x = c.right }
-                    p2 = { c.p2 with x = c.left } }
+                    p1 = { c.p1 with x = c.p2.x - 1}
+                    p2 = { c.p2 with x = c.p1.x + 1 } }
             else
                 c
 
         let c =
-            if c.top < c.bottom then
+            if c.p1.y > c.p2.y then
                 { c with
-                    p1 = { c.p1 with y = c.top }
-                    p2 = { c.p2 with y = c.bottom } }
+                    p1 = { c.p1 with y = c.p2.y - 1 }
+                    p2 = { c.p2 with y = c.p1.y + 1 } }
             else
                 c
 
         let c =
-            if c.front < c.back then
+            if c.p1.z > c.p2.z then
                 { c with
-                    p1 = { c.p1 with z = c.front }
-                    p2 = { c.p2 with z = c.back } }
+                    p1 = { c.p1 with z = c.p2.z - 1 }
+                    p2 = { c.p2 with z = c.p1.z + 1 } }
             else
                 c
 
