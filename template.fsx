@@ -27,11 +27,15 @@ let sampleInputText1 =
     """
 """
 
-[ sampleInputText1
-  // getInput ()
-  ]
-|> Seq.iteri (fun inputNo inputText ->
-    let input = inputText |> parseInput
-    printfn "Input %d Part 1: %O" inputNo (part1 input) //
-    printfn "Input %d Part 2: %O" inputNo (part2 input) //
-    printfn "")
+try
+    [ sampleInputText1
+      // getInput ()
+      ]
+    |> Seq.iteri (fun inputNo inputText ->
+        let input = inputText |> parseInput
+        printfn "Input %d Part 1: %O" inputNo (part1 input) //
+        printfn "Input %d Part 2: %O" inputNo (part2 input) //
+        printfn "")
+with
+| :? OperationCanceledException -> printfn "*** Cancelled ***"
+| _ -> reraise ()

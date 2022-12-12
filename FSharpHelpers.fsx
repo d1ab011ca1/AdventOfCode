@@ -13,6 +13,7 @@ let summatorial n = (n * (n + 1)) / 2
 
 /// Returns `(b, a)` if the `condition` is true, otherwise `(a, b)`.
 let inline swapIf condition a b = if condition then (b, a) else (a, b)
+
 /// Returns `(b, a)` if the `conditionf` returns true, otherwise `(a, b)`.
 let inline swapWhen conditionf a b =
     if conditionf () then (b, a) else (a, b)
@@ -52,7 +53,9 @@ module String =
     let inline endsWith (suffix: string) (s: string) = s.EndsWith(suffix)
     let inline indexOf (x: string) (s: string) = s.IndexOf(x)
     let inline contains (x: string) (s: string) = s.Contains(x, StringComparison.Ordinal)
-    let inline containsi (x: string) (s: string) = s.Contains(x, StringComparison.OrdinalIgnoreCase)
+
+    let inline containsi (x: string) (s: string) =
+        s.Contains(x, StringComparison.OrdinalIgnoreCase)
 
     let inline substr idx max (s: string) =
         if 0 <= max && max < s.Length - idx then
@@ -87,6 +90,7 @@ module String =
     let inline splitN (sep: string) count (s: string) = s.Split(sep, count = count)
     /// Split a string using the given `StringSplit` options.
     let inline splitO (sep: string) opts (s: string) = s.Split(sep, options = opts)
+
     /// Split a string into at most `count` parts using the given `StringSplit` options.
     let inline splitNO (sep: string) count opts (s: string) =
         s.Split(sep, count = count, options = opts)
@@ -130,8 +134,7 @@ module Int64 =
 
 module Array =
     let inline shuffle a =
-        a
-        |> Array.sortBy (fun _ -> Random.Shared.Next(0, a.Length))
+        a |> Array.sortBy (fun _ -> Random.Shared.Next(0, a.Length))
 
 let scriptPath =
 #if INTERACTIVE
@@ -140,24 +143,27 @@ let scriptPath =
     LINQPad.Util.CurrentQueryPath
 #endif
 
-/// Downloads puzzle input as a string. 
-/// Assumes script file is named "./{Year}/Day {day}.fsx" and 
+/// Downloads puzzle input as a string.
+/// Assumes script file is named "./{Year}/Day {day}.fsx" and
 /// cookie.txt exists in repo root.
 let downloadInput () =
     let fi = IO.FileInfo(scriptPath)
     let year = fi.Directory.Name |> int
-    let day = 
+
+    let day =
         IO.Path.GetFileNameWithoutExtension(fi.Name)
         |> String.split " "
         |> Array.last
         |> int
+
     let cookiePath = IO.Path.Join(fi.Directory.Parent.FullName, "cookie.txt")
     let cookie = IO.File.ReadAllLines(cookiePath)[0]
- 
+
     use client = new Net.Http.HttpClient()
     client.DefaultRequestHeaders.Add("cookie", cookie.Trim())
-    client.GetStringAsync($"https://adventofcode.com/{year}/day/{day}/input") 
-    |> Async.AwaitTask 
+
+    client.GetStringAsync($"https://adventofcode.com/{year}/day/{day}/input")
+    |> Async.AwaitTask
     |> Async.RunSynchronously
 
 /// Returns the path of the file containing puzzle input.
@@ -167,19 +173,18 @@ let getInputFilePath () =
 /// Returns the path of the file containing puzzle input.
 let getInput () =
     let inputFilePath = getInputFilePath ()
+
     if not (IO.File.Exists(inputFilePath)) then
-        let input = downloadInput()
+        let input = downloadInput ()
         IO.File.WriteAllText(inputFilePath, input)
+
     IO.File.ReadAllText(inputFilePath)
 
 /// Splits a string of text into an array of individual lines (delimited by `\n`).
 /// All lines are trimmed and empty lines and discarded.
 let parseInputText (text: string) =
     text
-    |> String.splitO
-        "\n"
-        (StringSplitOptions.TrimEntries
-         ||| StringSplitOptions.RemoveEmptyEntries)
+    |> String.splitO "\n" (StringSplitOptions.TrimEntries ||| StringSplitOptions.RemoveEmptyEntries)
 
 /// Converts a collection of strings into an array of character arrays.
 let toCharArrays (strings: string seq) =
@@ -194,34 +199,25 @@ let toWordArrays (strings: string seq) =
 
 /// Splits a collection of strings into groups of strings. Each group begins
 /// with a string matching the specified prefix.
-let toGroups groupPrefix (strings: string seq) =
-    let strings = strings |> Seq.toArray
-
-    if
-        strings.Length > 0
-        && not (strings[1] |> String.startsWith groupPrefix)
-    then
-        failwithf "Unexpected group header: %s" strings[1]
+let toGroups groupPrefix (strings: string[]) =
+    if strings.Length > 0 && not (strings[0] |> String.startsWith groupPrefix) then
+        failwithf "Unexpected group header: %s" strings[0]
 
     let mutable idx = 0
 
-    [ while idx < strings.Length do
-          let groupName = strings[idx]
+    [| while idx < strings.Length do
+           let groupName = strings[idx]
+           idx <- idx + 1
 
-          idx <- idx + 1
-
-          groupName,
-          [ while idx < strings.Length
-                  && not (strings[idx] |> String.startsWith groupPrefix) do
-
-                strings[idx]
-
-                idx <- idx + 1 ] ]
+           groupName,
+           [| while idx < strings.Length && not (strings[idx] |> String.startsWith groupPrefix) do
+                  strings[idx]
+                  idx <- idx + 1 |] |]
 
 /// Simple algorithm for parsing a binary tree
 type Tree<'V> =
     | Value of 'V
-    | Branch of Tree<'V> []
+    | Branch of Tree<'V>[]
 
 module Tree =
 
@@ -288,7 +284,7 @@ module Tree =
     let stringize (n: Tree<'V>) =
         let rec stringize sb =
             function
-            | Branch (subnodes) ->
+            | Branch(subnodes) ->
                 sb |> StringBuilder.append "[" |> ignore
 
                 subnodes
@@ -310,6 +306,7 @@ module Tree =
 type Point2D =
     { x: int
       y: int }
+
     override this.ToString() = $"({this.x},{this.y})"
 
     static member zero = { x = 0; y = 0 }
@@ -324,6 +321,7 @@ type Point3D =
     { x: int
       y: int
       z: int }
+
     override this.ToString() = $"({this.x},{this.y},{this.z})"
 
     static member zero = { x = 0; y = 0; z = 0 }
@@ -341,6 +339,7 @@ type Point3D =
 type Rect =
     { p1: Point2D // the "smaller" point, inclusive
       p2: Point2D } // the "larger" point, exclusive
+
     override this.ToString() = $"[{this.p1}..{this.p2})"
 
     member this.left = this.p1.x
@@ -399,17 +398,13 @@ type Rect =
 
     /// Checks if point intersects a Rect. Rect must be normalized.
     static member inline contains pt (c: Rect) =
-        c.left <= pt.x
-        && pt.x < c.right
-        && c.bottom <= pt.y
-        && pt.y < c.top
+        c.left <= pt.x && pt.x < c.right && c.bottom <= pt.y && pt.y < c.top
 
     /// Returns the union of the two rects. Rect must be normalized.
     static member union (c1: Rect) (c2: Rect) =
         let x1, x2 = (c1, c2) ||> swapIf (c2.left < c1.left)
 
-        let y1, y2 =
-            (c1, c2) ||> swapIf (c2.bottom < c1.bottom)
+        let y1, y2 = (c1, c2) ||> swapIf (c2.bottom < c1.bottom)
 
         let inline min a b = if a < b then a else b
         let inline max a b = if a > b then a else b
@@ -425,8 +420,7 @@ type Rect =
     static member intersection (c1: Rect) (c2: Rect) =
         let x1, x2 = (c1, c2) ||> swapIf (c2.left < c1.left)
 
-        let y1, y2 =
-            (c1, c2) ||> swapIf (c2.bottom < c1.bottom)
+        let y1, y2 = (c1, c2) ||> swapIf (c2.bottom < c1.bottom)
 
         let inline min a b = if a < b then a else b
 
@@ -473,6 +467,7 @@ type Rect =
 type Cube =
     { p1: Point3D // the "smaller" point, inclusive
       p2: Point3D } // the "larger" point, exclusive
+
     override this.ToString() = $"[{this.p1}..{this.p2})"
 
     member this.left = this.p1.x
@@ -518,7 +513,7 @@ type Cube =
         let c =
             if c.p1.x > c.p2.x then
                 { c with
-                    p1 = { c.p1 with x = c.p2.x - 1}
+                    p1 = { c.p1 with x = c.p2.x - 1 }
                     p2 = { c.p2 with x = c.p1.x + 1 } }
             else
                 c
@@ -554,8 +549,7 @@ type Cube =
     static member union (c1: Cube) (c2: Cube) =
         let x1, x2 = (c1, c2) ||> swapIf (c2.left < c1.left)
 
-        let y1, y2 =
-            (c1, c2) ||> swapIf (c2.bottom < c1.bottom)
+        let y1, y2 = (c1, c2) ||> swapIf (c2.bottom < c1.bottom)
 
         let z1, z2 = (c1, c2) ||> swapIf (c2.back < c1.back)
 
@@ -575,17 +569,14 @@ type Cube =
     static member intersection (c1: Cube) (c2: Cube) =
         let x1, x2 = (c1, c2) ||> swapIf (c2.left < c1.left)
 
-        let y1, y2 =
-            (c1, c2) ||> swapIf (c2.bottom < c1.bottom)
+        let y1, y2 = (c1, c2) ||> swapIf (c2.bottom < c1.bottom)
 
         let z1, z2 = (c1, c2) ||> swapIf (c2.back < c1.back)
 
         let inline min a b = if a < b then a else b
 
         // must intersect in all 3 dims
-        if x2.left < x1.right
-           && y2.bottom < y1.top
-           && z2.back < z1.front then
+        if x2.left < x1.right && y2.bottom < y1.top && z2.back < z1.front then
             { p1 =
                 { x = x2.left
                   y = y2.bottom
