@@ -397,7 +397,7 @@ type Rect =
         if Rect.isEmpty c then Rect.empty else c
 
     /// Checks if point intersects a Rect. Rect must be normalized.
-    static member inline contains pt (c: Rect) =
+    static member inline contains (pt: Point2D) (c: Rect) =
         c.left <= pt.x && pt.x < c.right && c.bottom <= pt.y && pt.y < c.top
 
     /// Returns the union of the two rects. Rect must be normalized.
