@@ -334,11 +334,16 @@ type Point3D =
           z = pt.z + dz }
 
 /// A rectangle type.
+///  p1+-----bottom----+
+///    |               |
+///   left           right
+///    |               |
+///    +------top------+p2
 [<NoComparison>]
 [<StructAttribute>]
 type Rect =
-    { p1: Point2D // the "smaller" point, inclusive
-      p2: Point2D } // the "larger" point, exclusive
+    { p1: Point2D // the "smaller" point (bottom-left), inclusive
+      p2: Point2D } // the "larger" point (top-right), exclusive
 
     override this.ToString() = $"[{this.p1}..{this.p2})"
 
