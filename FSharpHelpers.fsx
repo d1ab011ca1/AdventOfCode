@@ -628,3 +628,9 @@ type Cube =
                   yield { a with p2 = { a.p2 with z = i.back } }
                   a <- { a with p1 = { a.p1 with z = i.back } } ]
             |> Some
+
+let manhattanDistance (p1: Point2D) (p2: Point2D) =
+    Math.Abs(p2.x - p1.x) + Math.Abs(p2.y - p1.y)
+
+let manhattanDistance3D (p1: Point3D) (p2: Point3D) =
+    Math.Abs(p2.x - p1.x) + Math.Abs(p2.y - p1.y) + Math.Abs(p2.z - p1.z)
