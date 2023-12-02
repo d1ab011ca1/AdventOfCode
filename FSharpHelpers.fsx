@@ -8,6 +8,18 @@ let trace x =
     LINQPad.Extensions.Dump(x)
 #endif
 
+let tee fn x =
+    fn x
+    x
+
+let test oper operName title expected actual =
+    if not (oper expected actual) then
+        failwithf "%s should %s [%A] but is [%A]." title operName expected actual
+
+let testEqual<'T> = test (=) "equal"
+
+let testNotEqual<'T> = test (<>) "not equal"
+
 /// Computes the sum of positive integers in the range 0..n, inclusive.
 let summatorial n = (n * (n + 1)) / 2
 
