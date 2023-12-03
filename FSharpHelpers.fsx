@@ -226,6 +226,17 @@ let toGroups groupPrefix (strings: string[]) =
                   strings[idx]
                   idx <- idx + 1 |] |]
 
+module Grid =
+    let width (grid: 'T array array) = grid[0].Length
+    let height (grid: 'T array array) = grid.Length
+    let widthAndHeight (grid: 'T array array) = width grid, height grid
+
+    let itemOrDefault x y defValue (grid: 'T array array) =
+        if y < 0 || x < 0 || y >= height grid || x >= width grid then
+            defValue
+        else
+            grid[y][x]
+
 /// Simple algorithm for parsing a binary tree
 type Tree<'V> =
     | Value of 'V
