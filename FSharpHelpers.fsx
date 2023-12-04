@@ -103,6 +103,10 @@ module String =
     /// Split a string using the given `StringSplit` options.
     let inline splitO (sep: string) opts (s: string) = s.Split(sep, options = opts)
 
+    /// Split a string while trimming and removing empty values.
+    let inline splitAndTrim (sep: string) (s: string) =
+        splitO sep (StringSplitOptions.TrimEntries ||| StringSplitOptions.RemoveEmptyEntries) s
+
     /// Split a string into at most `count` parts using the given `StringSplit` options.
     let inline splitNO (sep: string) count opts (s: string) =
         s.Split(sep, count = count, options = opts)
