@@ -6,15 +6,17 @@
 open System
 open FSharpHelpers
 
-type InputType = string array
+type InputData = Input of Data: string array
 
-let parseInput (text: string) : InputType =
+let parseInput (text: string) =
     text
     |> String.splitAndTrim "\n"
     |> Array.map (fun s ->
         match s with
         | "pattern" -> s
         | _ -> failwithf "Unexpected input: %s" s)
+
+    |> Input
     |> tee (printfn "%A")
 
 let sample1 =
@@ -24,9 +26,9 @@ let sample1 =
 
 let sample2 = sample1
 
-let part1 (input: InputType) = 0
+let part1 (Input data) = 0
 
-let part2 (input: InputType) = 0
+let part2 (Input data) = 0
 
 let data = getInput () |> parseInput
 
