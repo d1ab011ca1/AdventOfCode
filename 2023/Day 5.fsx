@@ -53,7 +53,7 @@ let parseInput (text: string) : InputType =
                  Length = ns[2] }
 
                idx <- idx + 1 |]
-        |> Array.sortBy (fun e -> e.SrcStart)
+        |> Array.sortBy _.SrcStart
 
     let input =
         { Seeds = seeds
@@ -73,7 +73,7 @@ let parseInput (text: string) : InputType =
         |> Seq.iter (fun (e1, e2) -> assert (not <| intersects (e1.SrcStart, e1.Length) (e2.SrcStart, e2.Length)))
 
         map
-        |> Seq.sortBy (fun e -> e.DstStart)
+        |> Seq.sortBy _.DstStart
         |> Seq.pairwise
         |> Seq.iter (fun (e1, e2) -> assert (not <| intersects (e1.DstStart, e1.Length) (e2.DstStart, e2.Length)))
 
