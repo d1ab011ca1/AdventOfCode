@@ -6,9 +6,9 @@
 open System
 open FSharpHelpers
 
-type InputData = Input of Data: string array
+type InputData = Input of string[]
 
-let parseInput (text: string) =
+let parseInput (text: string) : InputData =
     text
     |> String.splitAndTrim "\n"
     |> Array.map (fun s ->
