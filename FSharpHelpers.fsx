@@ -144,9 +144,70 @@ module Int32 =
     let inline toString toBase (num: Int32) = Convert.ToString(num, toBase = toBase)
     let inline fromString fromBase (s: string) = Convert.ToInt32(s, fromBase = fromBase)
 
+    /// Computes the Greatest Common Divisor (GCD) of two integers
+    [<TailCall>]
+    let gcd a b =
+        let rec loop a b =
+            if b = 0 then a
+            elif a > b then loop b (a % b)
+            else loop a (b % a)
+
+        loop (abs a) (abs b)
+
+    /// Computes the Greatest Common Divisor (GCD) of a list of integers
+    let gcdList nums =
+        match nums with
+        | [] -> 0
+        | head :: rest -> rest |> List.fold gcd head
+
+    /// Computes the Least Common Multiple (LCM) of two integers
+    /// Use the Int64 version if there is any chance of overflow.
+    let lcm a b =
+        match a, b with
+        | 0, _
+        | _, 0 -> 0
+        | _ -> abs (a * b) / gcd a b
+
+    /// Computes the Least Common Multiple (LCM) of a list of integers
+    /// Use the Int64 version if there is any chance of overflow.
+    let lcmList nums =
+        match nums with
+        | [] -> 0
+        | head :: rest -> rest |> List.fold lcm head
+
 module Int64 =
     let inline toString toBase (num: Int64) = Convert.ToString(num, toBase = toBase)
     let inline fromString fromBase (s: string) = Convert.ToInt64(s, fromBase = fromBase)
+
+    /// Computes the Greatest Common Divisor (GCD) of two integers
+    [<TailCall>]
+    let gcd a b =
+        let rec loop a b =
+            if b = 0L then a
+            elif a > b then loop b (a % b)
+            else loop a (b % a)
+
+        loop (abs a) (abs b)
+
+    /// Computes the Greatest Common Divisor (GCD) of a list of integers
+    let gcdList nums =
+        match nums with
+        | [] -> 0L
+        | head :: rest -> rest |> List.fold gcd head
+
+    /// Computes the Least Common Multiple (LCM) of two integers
+    let lcm a b =
+        match a, b with
+        | 0L, _
+        | _, 0L -> 0L
+        | _ -> abs (a * b) / gcd a b
+
+    /// Computes the Least Common Multiple (LCM) of a list of integers
+    let lcmList nums =
+        match nums with
+        | [] -> 0L
+        | head :: rest -> rest |> List.fold lcm head
+
 
 module Array =
     let inline shuffle a =
