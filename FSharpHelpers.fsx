@@ -8,9 +8,12 @@ let trace x =
     LINQPad.Extensions.Dump(x)
 #endif
 
-let tee fn x =
+let inline tee ([<InlineIfLambda>] fn) x =
     fn x
     x
+
+let inline echo x = tee (printfn "%A") x
+let inline echos prefix x = tee (printfn "%s: %A" prefix) x
 
 let test oper operName title expected actual =
     if not (oper expected actual) then
@@ -27,7 +30,7 @@ let summatorial n = (n * (n + 1)) / 2
 let inline swapIf condition a b = if condition then (b, a) else (a, b)
 
 /// Returns `(b, a)` if the `conditionf` returns true, otherwise `(a, b)`.
-let inline swapWhen conditionf a b =
+let inline swapWhen ([<InlineIfLambda>] conditionf) a b =
     if conditionf () then (b, a) else (a, b)
 
 /// Converts the given digit character ('0'..'9') to its numeric equivalent (0..9).
@@ -123,7 +126,7 @@ module String =
     let inline replaceRE (re: Regex) replacement (s: string) =
         re.Replace(s, replacement = replacement)
 
-    let inline replaceREWith (re: Regex) evaluator (s: string) =
+    let inline replaceREWith (re: Regex) ([<InlineIfLambda>] evaluator) (s: string) =
         re.Replace(s, MatchEvaluator(evaluator))
 
     let inline tryMatch (re: Regex) (s: string) =
@@ -133,6 +136,8 @@ module String =
 
 module StringBuilder =
     open System.Text
+
+    let create (capacity: int) = StringBuilder(capacity)
 
     let inline append (x: string) (sb: StringBuilder) = sb.Append(x)
 
@@ -290,17 +295,6 @@ let toGroups groupPrefix (strings: string[]) =
            [| while idx < strings.Length && not (strings[idx] |> String.startsWith groupPrefix) do
                   strings[idx]
                   idx <- idx + 1 |] |]
-
-module Grid =
-    let width (grid: 'T array array) = grid[0].Length
-    let height (grid: 'T array array) = grid.Length
-    let widthAndHeight (grid: 'T array array) = width grid, height grid
-
-    let itemOrDefault x y defValue (grid: 'T array array) =
-        if y < 0 || x < 0 || y >= height grid || x >= width grid then
-            defValue
-        else
-            grid[y][x]
 
 /// Simple algorithm for parsing a binary tree
 type Tree<'V> =
@@ -722,3 +716,152 @@ let manhattanDistance (p1: Point2D) (p2: Point2D) =
 
 let manhattanDistance3D (p1: Point3D) (p2: Point3D) =
     Math.Abs(p2.x - p1.x) + Math.Abs(p2.y - p1.y) + Math.Abs(p2.z - p1.z)
+
+/// A rectangular grid of items, modeled as an array of rows.
+/// The Y coordinate specifies a row index.
+/// The X coordinate specifies a column index.
+type Grid<'T> = GridRow<'T>[]
+and GridRow<'T> = 'T[]
+
+module Grid =
+    type XCoord = int
+    type YCoord = int
+    /// The X-Y coordinates of a grid position.
+    type Coordinates = (XCoord * YCoord)
+
+    /// Asserts that the grid is rectangular.
+    let verify (grid: Grid<'T>) =
+        for y = 1 to grid.Length - 1 do
+            assert (grid[y].Length = grid[0].Length)
+
+    let inline create (width: XCoord) (height: YCoord) value : Grid<'T> =
+        Array.init height (fun _ -> Array.create width value)
+
+    let inline clone (grid: Grid<'T>) = grid |> Array.map Array.copy
+
+    /// Converts an array of strings into a character grid.
+    let fromLines (lines: string[]) : Grid<char> =
+        lines |> Array.map String.toArray |> tee verify
+
+    /// Returns the width (X direction) of a grid.
+    let inline width (grid: Grid<'T>) : XCoord = grid[0].Length
+
+    /// Returns the height (Y direction) of a grid.
+    let inline height (grid: Grid<'T>) : YCoord = grid.Length
+
+    /// Returns the width and height of a grid.
+    let inline widthAndHeight grid = (width grid, height grid)
+
+    /// Returns the grid item at the X,Y coordinates. Throws exception if coordinates are out of bounds
+    let inline item (x: XCoord) (y: YCoord) (grid: Grid<'T>) = grid[y][x]
+
+    /// Returns the grid item at the X,Y coordinates, or the default value if the coordinates are out of bounds.
+    let tryItem (x: XCoord) (y: YCoord) (grid: Grid<'T>) =
+        if y < 0 || x < 0 || y >= grid.Length || x >= grid[y].Length then
+            None
+        else
+            Some(grid[y][x])
+
+    let itemOrDefault (x: XCoord) (y: YCoord) defValue (grid: Grid<'T>) =
+        tryItem x y grid |> Option.defaultValue defValue
+
+    let inline set (x: XCoord) (y: YCoord) value (grid: Grid<'T>) = grid[y][x] <- value
+
+    let inline trySet (x: XCoord) (y: YCoord) value (grid: Grid<'T>) =
+        if y < 0 || x < 0 || y >= grid.Length || x >= grid[y].Length then
+            ()
+        else
+            grid[y][x] <- value
+
+    let inline revCols (grid: Grid<'T>) = grid |> Array.rev
+    let inline revRows (grid: Grid<'T>) = grid |> Array.map Array.rev
+    let inline rev (grid: Grid<'T>) = grid |> revRows |> revCols
+
+    /// Applies the given function to each item in the specified grid column. The `Coordinates` passed to the function indicates the X-Y coordinates.
+    let inline iterCol (idx: XCoord) ([<InlineIfLambda>] fn: Coordinates -> 'T -> unit) (grid: Grid<'T>) =
+        for y = 0 to grid.Length - 1 do
+            fn (idx, y) (grid[y][idx])
+
+    /// Applies the given function to each item in the specified grid row. The `Coordinates` passed to the function indicates the X-Y coordinates.
+    let inline iterRow (idx: YCoord) ([<InlineIfLambda>] fn: Coordinates -> 'T -> unit) (grid: Grid<'T>) =
+        for x = 0 to grid[idx].Length - 1 do
+            fn (x, idx) (grid[idx][x])
+
+    /// Applies the given function to each item of the grid. The `Coordinates` passed to the function indicates the X-Y coordinates of the item.
+    let inline iter ([<InlineIfLambda>] fn: Coordinates -> 'T -> unit) (grid: Grid<'T>) =
+        let (w, h) = grid |> widthAndHeight
+
+        for y = 0 to h - 1 do
+            for x = 0 to w - 1 do
+                fn (x, y) (grid[y][x])
+
+    /// Builds a new grid whose items are the results of applying the given function to each of the items of the grid.
+    /// The tuple passed to the function indicates the X-Y coordinates of item being transformed, starting at (0,0).
+    let inline map ([<InlineIfLambda>] mapping: Coordinates -> 'T -> 'U) (grid: Grid<'T>) =
+        grid
+        |> Array.mapi (fun y row -> row |> Array.mapi (fun x item -> mapping (x, y) item))
+
+    /// Returns the X-Y coordinates of the first item in the grid that satisfies the given predicate.
+    /// If the item is not found, `None` is returned.
+    let tryPick (predicate: Coordinates -> 'T -> 'U option) (grid: Grid<'T>) =
+        let rec loop x y =
+            if y >= grid.Length then
+                None
+            elif x >= grid[y].Length then
+                loop 0 (y + 1)
+            else
+                match predicate (x, y) (grid[y][x]) with
+                | None -> loop (x + 1) y
+                | res -> res
+
+        loop 0 0
+
+    /// Returns the X-Y coordinates of the first item in the grid that satisfies the given predicate.
+    /// Throws an exception is the item is not found.
+    let pick predicate (grid: Grid<'T>) =
+        grid
+        |> tryPick predicate
+        |> Option.defaultWith (fun _ -> failwith "Value not found")
+
+    /// Returns the X-Y coordinates of the first item in the grid with the given value.
+    /// If the item is not found, `None` is returned.
+    let inline tryFind value (grid: Grid<'T>) =
+        grid |> tryPick (fun coords v -> if v = value then Some coords else None)
+
+    /// Returns the X-Y coordinates of the first item in the grid with the given value.
+    /// Throws an exception is the item is not found.
+    let find value (grid: Grid<'T>) =
+        grid
+        |> tryFind value
+        |> Option.defaultWith (fun _ -> failwith "Value not found")
+
+    let toSeq (grid: Grid<'T>) =
+        seq {
+            for row in grid do
+                yield! row
+        }
+
+    /// Convert the grid to a multiline string. Element are separated with the given separator string.
+    let stringize (separator: string) (grid: Grid<'T>) =
+        let (w, h) = grid |> widthAndHeight
+        let sb = StringBuilder.create (w * h * (1 + separator.Length))
+
+        for y = 0 to h - 1 do
+            for x = 0 to w - 1 do
+                sb.Append((grid[y][x]).ToString()).Append(separator) |> ignore
+
+            sb.AppendLine() |> ignore
+
+        sb.ToString()
+
+    /// Print the grid to stdout. Element are separated with the given separator string.
+    let printfnSep (separator: string) (grid: Grid<'T>) =
+        let (w, h) = grid |> widthAndHeight
+
+        for y = 0 to h - 1 do
+            for x = 0 to w - 1 do
+                printf "%O%s" (grid[y][x]) separator
+
+            printfn ""
+
+    let inline printfn grid = printfnSep "" grid
