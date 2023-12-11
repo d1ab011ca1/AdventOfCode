@@ -214,9 +214,56 @@ module Int64 =
         | head :: rest -> rest |> List.fold lcm head
 
 
+module List =
+    let permute list =
+        let rec inserts e =
+            function
+            | [] -> [ [ e ] ]
+            | x :: xs as list -> (e :: list) :: [ for xs' in inserts e xs -> x :: xs' ]
+
+        list |> List.fold (fun accum x -> List.collect (inserts x) accum) [ [] ]
+
+    /// Returns a list containing all unique pairs of the list.
+    /// Item (a,b) is considered the same as (b,a) -- only one is returned.
+    let allPairs includeIdentity list =
+        let rec loop acc values =
+            match values with
+            | [] -> acc
+            | h :: tail ->
+                let identity = if includeIdentity then [ (h, h) ] else []
+                let pairs = (tail |> List.map (fun t -> h, t))
+                tail |> loop (acc @ identity @ pairs)
+
+        list |> loop []
+
+module Seq =
+    /// Returns a sequence containing all unique pairs.
+    /// Item (a,b) is considered the same as (b,a) -- only one is returned.
+    let allPairs includeIdentity values =
+        seq {
+            let mutable values = values |> Seq.cache
+
+            while not (values |> Seq.isEmpty) do
+                let h = values |> Seq.head
+                let tail = values |> Seq.tail
+
+                if includeIdentity then
+                    yield (h, h)
+
+                for t in tail do
+                    yield (h, t)
+
+                values <- tail
+        }
+
 module Array =
     let inline shuffle a =
         a |> Array.sortBy (fun _ -> Random.Shared.Next(0, a.Length))
+
+    let swap i j (arr: _[]) =
+        let buf = arr[i]
+        arr[i] <- arr[j]
+        arr[j] <- buf
 
 let scriptPath =
 #if INTERACTIVE
@@ -737,6 +784,9 @@ module Grid =
     let inline create (width: XCoord) (height: YCoord) value : Grid<'T> =
         Array.init height (fun _ -> Array.create width value)
 
+    let inline init (width: XCoord) (height: YCoord) initializer : Grid<'T> =
+        Array.init height (fun y -> Array.init width (fun x -> initializer x y))
+
     let inline clone (grid: Grid<'T>) = grid |> Array.map Array.copy
 
     /// Converts an array of strings into a character grid.
@@ -773,9 +823,27 @@ module Grid =
         else
             grid[y][x] <- value
 
+    let rotate degrees (grid: Grid<'T>) =
+        let (w, h) = grid |> widthAndHeight
+
+        match (360 + (degrees % 360)) % 360 with
+        | 0 -> grid |> clone
+        | 90 -> init h w (fun x y -> grid[x][w - y - 1])
+        | 180 -> init w h (fun x y -> grid[h - y - 1][w - x - 1])
+        | 270 -> init h w (fun x y -> grid[h - x - 1][y])
+        | _ -> failwith "invalid rotation"
+
     let inline revCols (grid: Grid<'T>) = grid |> Array.rev
     let inline revRows (grid: Grid<'T>) = grid |> Array.map Array.rev
     let inline rev (grid: Grid<'T>) = grid |> revRows |> revCols
+
+    let inline row (y: YCoord) (grid: Grid<'T>) : 'T seq = grid[y]
+
+    let col (x: XCoord) (grid: Grid<'T>) : 'T seq =
+        seq {
+            for y = 0 to grid.Length - 1 do
+                grid[y][x]
+        }
 
     /// Applies the given function to each item in the specified grid column. The `Coordinates` passed to the function indicates the X-Y coordinates.
     let inline iterCol (idx: XCoord) ([<InlineIfLambda>] fn: Coordinates -> 'T -> unit) (grid: Grid<'T>) =
@@ -800,6 +868,24 @@ module Grid =
     let inline map ([<InlineIfLambda>] mapping: Coordinates -> 'T -> 'U) (grid: Grid<'T>) =
         grid
         |> Array.mapi (fun y row -> row |> Array.mapi (fun x item -> mapping (x, y) item))
+
+    /// Builds a new grid whose items are the results of applying the given function to each of the items of the grid.
+    /// The tuple passed to the function indicates the X-Y coordinates of item being transformed, starting at (0,0).
+    let inline fold
+        ([<InlineIfLambda>] folder: 'StateT -> Coordinates -> 'T -> 'StateT)
+        (state: 'StateT)
+        (grid: Grid<'T>)
+        =
+        let rec loop state x y =
+            if y >= grid.Length then
+                state
+            elif x >= grid[y].Length then
+                loop state 0 (y + 1)
+            else
+                let state = folder state (x, y) (grid[y][x])
+                loop state (x + 1) y
+
+        loop state 0 0
 
     /// Returns the X-Y coordinates of the first item in the grid that satisfies the given predicate.
     /// If the item is not found, `None` is returned.
