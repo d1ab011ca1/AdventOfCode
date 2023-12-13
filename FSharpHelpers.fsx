@@ -23,6 +23,17 @@ let testEqual<'T> = test (=) "equal"
 
 let testNotEqual<'T> = test (<>) "not equal"
 
+let measure fn =
+    let start = Diagnostics.Stopwatch.GetTimestamp()
+    let res = fn ()
+    res, Diagnostics.Stopwatch.GetElapsedTime(start)
+
+let inline executePuzzle title fn expected =
+    let (res, elapsed) = measure fn
+    printfn "[%s] %s: %A" (elapsed.ToString("G")) title res
+    testEqual title expected res
+
+
 /// Computes the sum of positive integers in the range 0..n, inclusive.
 let summatorial n = (n * (n + 1)) / 2
 
@@ -49,6 +60,16 @@ let hexDigitToInt (c: char) =
 
 let (|DecChar|) = digitToInt
 let (|HexChar|) = hexDigitToInt
+
+let factorial n =
+    let rec fact =
+        function
+        | 0 -> 1L
+        | 1 -> 1L
+        | n -> fact (n - 1) * int64 n
+
+    assert (n >= 0)
+    fact n
 
 module String =
     open System.Text.RegularExpressions
@@ -214,31 +235,92 @@ module Int64 =
         | head :: rest -> rest |> List.fold lcm head
 
 
-module List =
-    let permute list =
-        let rec inserts e =
-            function
-            | [] -> [ [ e ] ]
-            | x :: xs as list -> (e :: list) :: [ for xs' in inserts e xs -> x :: xs' ]
+module Array =
+    let inline shuffle a =
+        a |> Array.sortBy (fun _ -> Random.Shared.Next(0, a.Length))
 
-        list |> List.fold (fun accum x -> List.collect (inserts x) accum) [ [] ]
+    let swap i j (arr: _[]) =
+        let buf = arr[i]
+        arr[i] <- arr[j]
+        arr[j] <- buf
 
-    /// Returns a list containing all unique pairs of the list.
-    /// Item (a,b) is considered the same as (b,a) -- only one is returned.
-    let allPairs includeIdentity list =
-        let rec loop acc values =
-            match values with
-            | [] -> acc
-            | h :: tail ->
-                let identity = if includeIdentity then [ (h, h) ] else []
-                let pairs = (tail |> List.map (fun t -> h, t))
-                tail |> loop (acc @ identity @ pairs)
+    // Note: this function permutes the source array in-place.
+    let permutationsSubsetInPlace start len arr =
+        seq {
+            yield arr
 
-        list |> loop []
+            // c acts as the stack state.
+            // i acts similarly to a stack pointer
+            let c = Array.zeroCreate len
+            let mutable i = 1
+
+            while i < len do
+                if c[i] < i then
+                    if i % 2 = 0 then
+                        arr |> swap start (start + i)
+                    else
+                        arr |> swap (start + c[i]) (start + i)
+
+                    yield arr
+
+                    // Swap has occurred ending the for-loop. Simulate the increment of the for-loop counter
+                    c[i] <- c[i] + 1
+                    // Simulate recursive call reaching the base case by bringing the pointer to the base case analog in the array
+                    i <- 1
+                else
+                    // Calling generate(i+1, A) has ended as the for-loop terminated. Reset the state and simulate popping the stack by incrementing the pointer.
+                    c[i] <- 0
+                    i <- i + 1
+        }
+
+    // Note: this function permutes the source array in-place.
+    let inline permutationsInPlace arr =
+        permutationsSubsetInPlace 0 (arr |> Array.length) arr
+
+    let inline permutations arr =
+        arr |> Array.copy |> permutationsInPlace
+
+    let inline permutationsSubset start len arr =
+        arr |> Array.copy |> permutationsSubsetInPlace 0 (arr |> Array.length)
 
 module Seq =
-    /// Returns a sequence containing all unique pairs.
-    /// Item (a,b) is considered the same as (b,a) -- only one is returned.
+    /// Generates all permutations of a subset of a sequence of elements using
+    /// Heap's algorithm (https://en.wikipedia.org/wiki/Heap%27s_algorithm)
+    ///
+    /// Use with care. Although this function can enumerate sequences of
+    /// arbitrary length, the number of permutation of a set of length
+    /// `n` is `n!`. Thus a set with 13 items has 6.2x10^9 permutations
+    /// and takes about 2.5 minutes to enumerate (~41.5 million enums/s).
+    ///
+    /// # Parameters
+    /// - start: The starting index of the elements to permute.
+    /// - len: The number of elements to permute.
+    /// - s: The source sequence.
+    let permutationsSubset start len s =
+        seq {
+            let arr = s |> Seq.toArray
+
+            for p in arr |> Array.permutationsSubsetInPlace start len do
+                yield (p |> Array.toSeq)
+        }
+
+    /// Generates all permutations of a sequence of elements using
+    /// Heap's algorithm (https://en.wikipedia.org/wiki/Heap%27s_algorithm)
+    ///
+    /// Use with care. Although this function can enumerate sequences of
+    /// arbitrary length, the number of permutation of a set of length
+    /// `n` is `n!`. Thus a set with 13 items has 6.2x10^9 permutations
+    /// and takes about 2.5 minutes to enumerate (~41.5 million enums/s).
+    let permutations s =
+        seq {
+            let arr = s |> Seq.toArray
+
+            for p in arr |> Array.permutationsInPlace do
+                yield (p |> Array.toSeq)
+        }
+
+    /// Returns a sequence containing all **unique** pairs --
+    /// pair (a,b) is considered the same as (b,a) and only the first is returned.
     let allPairs includeIdentity values =
         seq {
             let mutable values = values |> Seq.cache
@@ -255,15 +337,6 @@ module Seq =
 
                 values <- tail
         }
-
-module Array =
-    let inline shuffle a =
-        a |> Array.sortBy (fun _ -> Random.Shared.Next(0, a.Length))
-
-    let swap i j (arr: _[]) =
-        let buf = arr[i]
-        arr[i] <- arr[j]
-        arr[j] <- buf
 
 let scriptPath =
 #if INTERACTIVE
