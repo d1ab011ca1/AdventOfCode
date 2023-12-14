@@ -35,5 +35,5 @@ let data = getInput () |> parseInput
 executePuzzle "Part 1 sample" (fun () -> part1 sample1) 0
 executePuzzle "Part 1 finale" (fun () -> part1 data) 0
 
-executePuzzle "Part 2 sample" (fun () -> part2 sample1) 0
+executePuzzle "Part 2 sample" (fun () -> part2 sample2) 0
 executePuzzle "Part 2 finale" (fun () -> part2 data) 0
