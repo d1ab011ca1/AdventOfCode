@@ -32,8 +32,8 @@ let part2 (Input data) = 0
 
 let data = getInput () |> parseInput
 
-part1 sample1 |> testEqual "Part 1 sample" 0
-part1 data |> tee (printfn "Part 1: %A") |> testEqual "Part 1" 0
+executePuzzle "Part 1 sample" (fun () -> part1 sample1) 0
+executePuzzle "Part 1 finale" (fun () -> part1 data) 0
 
-part2 sample2 |> testEqual "Part 2 sample" 0
-part2 data |> tee (printfn "Part 2: %A") |> testEqual "Part 2" 0
+executePuzzle "Part 2 sample" (fun () -> part2 sample1) 0
+executePuzzle "Part 2 finale" (fun () -> part2 data) 0
