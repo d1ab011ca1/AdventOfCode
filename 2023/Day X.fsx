@@ -22,6 +22,7 @@ let parseInput (text: string) : InputData =
 let sample1 =
     parseInput
         """
+
 """
 
 let sample2 = sample1
