@@ -421,6 +421,26 @@ type Tree<'V> =
     | Value of 'V
     | Branch of Tree<'V>[]
 
+    override n.ToString() =
+        let rec stringize sb =
+            function
+            | Branch(subnodes) ->
+                sb |> StringBuilder.append "[" |> ignore
+
+                subnodes
+                |> Array.iteri (fun i n' ->
+                    if i > 0 then
+                        sb |> StringBuilder.append "," |> ignore
+
+                    stringize sb n')
+
+                sb |> StringBuilder.append "]" |> ignore
+            | Value v -> sb.Append(sprintf "%A" v) |> ignore
+
+        let sb = Text.StringBuilder()
+        stringize sb n
+        sb.ToString()
+
 module Tree =
 
     type Token<'V> =
@@ -483,28 +503,11 @@ module Tree =
         parse 0 true |> fst |> Option.get
 
     // Converts a tree to a string.
-    let stringize (n: Tree<'V>) =
-        let rec stringize sb =
-            function
-            | Branch(subnodes) ->
-                sb |> StringBuilder.append "[" |> ignore
-
-                subnodes
-                |> Seq.iteri (fun i n ->
-                    if i > 0 then
-                        sb |> StringBuilder.append "," |> ignore
-
-                    stringize sb n)
-
-                sb |> StringBuilder.append "]" |> ignore
-            | Value v -> sb.Append(sprintf "%A" v) |> ignore
-
-        let sb = Text.StringBuilder()
-        stringize sb n
-        sb.ToString()
+    let stringize (n: Tree<'V>) = n.ToString()
 
 /// A basic 2-dimensional point.
 [<StructAttribute>]
+// [<StructuredFormatDisplay("({x},{y})")>]
 type Point2D =
     { x: int
       y: int }
@@ -519,6 +522,7 @@ type Point2D =
 
 /// A basic 3-dimensional point.
 [<StructAttribute>]
+// [<StructuredFormatDisplay("({x},{y},{z})")>]
 type Point3D =
     { x: int
       y: int
@@ -543,6 +547,7 @@ type Point3D =
 ///    +------top------+p2
 [<NoComparison>]
 [<StructAttribute>]
+[<StructuredFormatDisplay("[{p1}..{p2}]")>]
 type Rect =
     { p1: Point2D // the "smaller" point (bottom-left), inclusive
       p2: Point2D } // the "larger" point (top-right), exclusive
@@ -631,7 +636,7 @@ type Rect =
 
         let inline min a b = if a < b then a else b
 
-        // must intersect in all 3 dims
+        // must intersect in all dims
         if x2.left < x1.right && y2.bottom < y1.top then
             { p1 = { x = x2.left; y = y2.bottom }
               p2 =
@@ -671,6 +676,7 @@ type Rect =
 /// A cube type.
 [<NoComparison>]
 [<StructAttribute>]
+[<StructuredFormatDisplay("[{p1}..{p2}]")>]
 type Cube =
     { p1: Point3D // the "smaller" point, inclusive
       p2: Point3D } // the "larger" point, exclusive
@@ -782,7 +788,7 @@ type Cube =
 
         let inline min a b = if a < b then a else b
 
-        // must intersect in all 3 dims
+        // must intersect in all dims
         if x2.left < x1.right && y2.bottom < y1.top && z2.back < z1.front then
             { p1 =
                 { x = x2.left

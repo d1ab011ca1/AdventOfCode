@@ -4,9 +4,10 @@
 #endif
 
 open System
+open System.Text.RegularExpressions
 open FSharpHelpers
 
-type InputData = Input of string[]
+type InputData = string[]
 
 let parseInput (text: string) : InputData =
     text
@@ -15,23 +16,29 @@ let parseInput (text: string) : InputData =
         match s with
         | "pattern" -> s
         | _ -> failwithf "Unexpected input: %s" s)
-
-    |> Input
     |> tee (printfn "%A")
 
+let validateAssumptions data = ()
+
+let parseData s = parseInput s |> tee validateAssumptions
+
 let sample1 =
-    parseInput
+    parseData
         """
 
 """
 
 let sample2 = sample1
 
-let part1 (Input data) = 0
+let data = getInput () |> parseData
 
-let part2 (Input data) = 0
+let part1 (data: InputData) =
+    //
+    0
 
-let data = getInput () |> parseInput
+let part2 (data: InputData) =
+    //
+    0
 
 executePuzzle "Part 1 sample" (fun () -> part1 sample1) 0
 executePuzzle "Part 1 finale" (fun () -> part1 data) 0
