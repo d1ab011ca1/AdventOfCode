@@ -109,6 +109,8 @@ module String =
 
     let inline toArray (s: string) = s.ToCharArray()
     let inline toSeq (s: string) : char seq = s :> _
+    let inline ofArray (cs: char[]) = String.Concat(cs)
+    let inline ofSeq (cs: char seq) = String.Concat(cs)
 
     let inline toUpper (s: string) = s.ToUpperInvariant()
     let inline toLower (s: string) = s.ToLowerInvariant()

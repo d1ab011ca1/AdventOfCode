@@ -18,7 +18,10 @@ let parseInput (text: string) : InputData =
         | _ -> failwithf "Unexpected input: %s" s)
     |> tee (printfn "%A")
 
-let validateAssumptions data = ()
+let validateAssumptions (data: InputData) =
+    // Note: `assert` does not work in FSI, so must throw exception
+    if false then
+        failwith "bad assumption"
 
 let parseData s = parseInput s |> tee validateAssumptions
 
