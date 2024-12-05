@@ -893,8 +893,14 @@ module Grid =
         else
             Some(grid[y][x])
 
+    let tryItemV (x: XCoord) (y: YCoord) (grid: Grid<'T>) =
+        if y < 0 || x < 0 || y >= grid.Length || x >= grid[y].Length then
+            ValueNone
+        else
+            ValueSome(grid[y][x])
+
     let itemOrDefault (x: XCoord) (y: YCoord) defValue (grid: Grid<'T>) =
-        tryItem x y grid |> Option.defaultValue defValue
+        tryItemV x y grid |> ValueOption.defaultValue defValue
 
     let inline set (x: XCoord) (y: YCoord) value (grid: Grid<'T>) = grid[y][x] <- value
 
