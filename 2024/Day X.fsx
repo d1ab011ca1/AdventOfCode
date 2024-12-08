@@ -33,7 +33,7 @@ let sample1 =
 
 let sample2 = sample1
 
-let data = getInput () |> parseData
+let data = lazy (getInput () |> parseData)
 
 let part1 (data: InputData) =
     //
@@ -44,7 +44,7 @@ let part2 (data: InputData) =
     0
 
 executePuzzle "Part 1 sample" (fun () -> part1 sample1) 0
-executePuzzle "Part 1 finale" (fun () -> part1 data) 0
+executePuzzle "Part 1 finale" (fun () -> part1 data.Value) 0
 
 executePuzzle "Part 2 sample" (fun () -> part2 sample2) 0
-executePuzzle "Part 2 finale" (fun () -> part2 data) 0
+executePuzzle "Part 2 finale" (fun () -> part2 data.Value) 0
