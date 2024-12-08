@@ -522,6 +522,8 @@ type Point2D =
 
     static member inline offset (dx, dy) pt = { x = pt.x + dx; y = pt.y + dy }
 
+let (|Point2D|) = Point2D.ofTuple
+
 /// A basic 3-dimensional point.
 [<StructAttribute>]
 // [<StructuredFormatDisplay("({x},{y},{z})")>]
@@ -540,6 +542,8 @@ type Point3D =
         { x = pt.x + dx
           y = pt.y + dy
           z = pt.z + dz }
+
+let (|Point3D|) = Point3D.ofTuple
 
 /// A rectangle type.
 ///  p1+-----bottom----+
@@ -571,8 +575,7 @@ type Rect =
     static member inline fromPoints p1 p2 = { p1 = p1; p2 = p2 } |> Rect.normalize
 
     /// Creates a normalized Rect with the given points
-    static member inline fromCoords xy1 xy2 =
-        Rect.fromPoints (Point2D.ofTuple xy1) (Point2D.ofTuple xy2)
+    static member inline fromCoords (Point2D xy1) (Point2D xy2) = Rect.fromPoints xy1 xy2
 
     static member inline dims(c: Rect) = (c.width, c.height)
 
@@ -704,8 +707,7 @@ type Cube =
     static member inline fromPoints p1 p2 = { p1 = p1; p2 = p2 } |> Cube.normalize
 
     /// Creates a normalized cube with the given points
-    static member inline fromCoords xyz1 xyz2 =
-        Cube.fromPoints (Point3D.ofTuple xyz1) (Point3D.ofTuple xyz2)
+    static member inline fromCoords (Point3D xyz1) (Point3D xyz2) = Cube.fromPoints xyz1 xyz2
 
     static member inline dims(c: Cube) = (c.width, c.height, c.depth)
 
