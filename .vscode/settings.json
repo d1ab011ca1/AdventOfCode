@@ -1,5 +1,6 @@
 {
-    "FSharp.inlayHints.enabled": false,
-    "FSharp.inlayHints.typeAnnotations": false,
-    "editor.inlayHints.enabled": "offUnlessPressed"
+  "FSharp.inlayHints.enabled": false,
+  "FSharp.inlayHints.typeAnnotations": false,
+  "editor.inlayHints.enabled": "offUnlessPressed",
+  "cSpell.words": ["summatorial"]
 }
