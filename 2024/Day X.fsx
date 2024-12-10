@@ -16,7 +16,7 @@ let parseInput (text: string) : InputData =
         match s with
         | "pattern" -> s
         | _ -> failwithf "Unexpected input: %s" s)
-    |> tee (printfn "%A")
+    |> dump
 
 let validateAssumptions (data: InputData) =
     // Note: `assert` does not work in FSI, so must throw exception

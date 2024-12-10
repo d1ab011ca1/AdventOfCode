@@ -1,19 +1,26 @@
 open System
 
-let trace x =
-#if INTERACTIVE
-    printfn "%A" x
-    x
-#else
-    LINQPad.Extensions.Dump(x)
-#endif
-
 let inline tee ([<InlineIfLambda>] fn) x =
     fn x
     x
 
-let inline echo x = tee (printfn "%A") x
-let inline echos prefix x = tee (printfn "%s: %A" prefix) x
+let inline dump x =
+#if INTERACTIVE
+    tee (printfn "%A") x
+#else
+    LINQPad.Extensions.Dump(x)
+#endif
+
+let inline dumps (heading: string) x =
+#if INTERACTIVE
+    tee (printfn "%s: %A" heading) x
+#else
+    LINQPad.Extensions.Dump(heading, x)
+#endif
+
+let trace = dump
+let echo = dump
+let echos = dumps
 
 let test oper operName title expected actual =
     if not (oper expected actual) then
@@ -954,7 +961,7 @@ module Grid =
 
     /// Builds a new grid whose items are the results of applying the given function to each of the items of the grid.
     /// The tuple passed to the function indicates the X-Y coordinates of item being transformed, starting at (0,0).
-    let inline map ([<InlineIfLambda>] mapping: Coordinates -> 'T -> 'U) (grid: Grid<'T>) =
+    let inline map ([<InlineIfLambda>] mapping: Coordinates -> 'T -> 'U) (grid: Grid<'T>) : Grid<'U> =
         grid
         |> Array.mapi (fun y row -> row |> Array.mapi (fun x item -> mapping (x, y) item))
 
@@ -1015,6 +1022,17 @@ module Grid =
             for row in grid do
                 yield! row
         }
+
+    /// Converts the grid to a sequence of (Coord, 'T) tuples.
+    let inline toCoordSeq (grid: Grid<'T>) : seq<Coordinates * 'T> =
+        seq {
+            let (w, h) = grid |> widthAndHeight
+
+            for y = 0 to h - 1 do
+                for x = 0 to w - 1 do
+                    yield (x, y), (grid[y][x])
+        }
+
 
     /// Convert the grid to a multiline string. Element are separated with the given separator string.
     let stringize (separator: string) (grid: Grid<'T>) =
