@@ -1,0 +1,23 @@
+graph G {
+    fontname = "Helvetica,Arial,sans-serif";
+    node [fontname = "Helvetica,Arial,sans-serif";];
+    edge [fontname = "Helvetica,Arial,sans-serif";];
+    layout = fdp;
+    concentrate = true;
+    aq -- {wq cg vc yn};
+    cg -- {aq yn tb de};
+    co -- {tc de ta ka};
+    de -- {ka ta co cg};
+    ka -- {de ta tb co};
+    kh -- {ta ub qp tc};
+    qp -- {wh td ub kh};
+    ta -- {kh de ka co};
+    tb -- {vc wq ka cg};
+    tc -- {co td wh kh};
+    td -- {yn qp wh tc};
+    ub -- {vc wq kh qp};
+    vc -- {tb wq ub aq};
+    wh -- {qp yn td tc};
+    wq -- {vc aq ub tb};
+    yn -- {td wh cg aq};
+}
