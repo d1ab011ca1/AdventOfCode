@@ -11,13 +11,13 @@ open FSharpHelpers
 
 type InputData = string[]
 
-let parseInput (text: string) : InputData =
-    text
-    |> String.splitAndTrim "\n"
+let parseInput ((TextLines lines) as text) : InputData =
+    lines
     |> Array.map (fun s ->
-        match s with
-        | "pattern" -> s
-        | _ -> failwithf "Unexpected input: %s" s)
+        // match s |> Regex.matchGroups @"^(.+),(.+)$" with
+        // | None -> if not m.Success then failwithf "Bad input: %A" s
+        // | Some gs -> (gs[1].Value, gs[2].Value)
+        s)
     |> dump
 
 let validateAssumptions (data: InputData) =

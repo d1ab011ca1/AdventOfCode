@@ -116,15 +116,15 @@ let hexDigitToInt (c: char) =
 let (|DecChar|) = digitToInt
 let (|HexChar|) = hexDigitToInt
 
+[<TailCall>]
 let factorial n =
-    let rec fact =
+    let rec fact acc =
         function
-        | 0 -> 1L
-        | 1 -> 1L
-        | n -> fact (n - 1) * int64 n
+        | n when n <= 1 -> acc
+        | n -> fact (acc * int64 n) (n - 1)
 
     assert (n >= 0)
-    fact n
+    fact 1L n
 
 type XCoord = int
 type YCoord = int
@@ -224,6 +224,24 @@ module Direction =
         | '>' -> Right
         | '<' -> Left
         | _ -> invalidArg (nameof char) "Unexpected arrow character."
+
+module Regex =
+    open System.Text.RegularExpressions
+
+    let matchGroups (re: string) (s: string) =
+        let m = Regex.Match(s, re)
+        if not m.Success then None else Some m.Groups
+
+    let (|GroupNum|_|) (n: int) (gs: GroupCollection) =
+        match gs[n] with
+        | m when m.Success -> Some m.Value
+        | _ -> None
+
+    let (|GroupName|_|) (n: string) (gs: GroupCollection) =
+        match gs[n] with
+        | m when m.Success -> Some m.Value
+        | _ -> None
+
 
 module String =
     open System.Text.RegularExpressions
@@ -403,6 +421,26 @@ module Int64 =
 
 
 module Array =
+    /// Splits the array into two parts -- those before index `n`, and those
+    /// at or after index `n`.
+    /// If `n` is less than or equal to zero, the first part is empty.
+    /// If `n` is greater than or equal to the length of the array, the second part is empty.
+    let inline splitAtIndex n a =
+        match n with
+        | _ when n <= 0 -> (Array.empty, a |> Array.copy)
+        | _ when n >= Array.length a -> (a |> Array.copy, Array.empty)
+        | _ -> (a[.. (n - 1)], a[n..])
+
+    /// Splits the array into two parts -- those prior to the index where the
+    /// predicate first returns `true`, and the others.
+    /// If the predicate never returns `true`, the first tuple item is the entire array.
+    /// If the predicate returns `true` for the first item, the first tuple item is empty.
+    let inline split ([<InlineIfLambda>] pred: 'a -> bool) a =
+        match a |> Array.tryFindIndex pred with
+        | None -> (a |> Array.copy, Array.empty)
+        | Some 0 -> (Array.empty, a |> Array.copy)
+        | Some n -> (a[.. (n - 1)], a[n..])
+
     let inline shuffle a =
         a |> Array.sortBy (fun _ -> Random.Shared.Next(0, a.Length))
 
@@ -510,6 +548,7 @@ type Tree<'V> =
     | Value of 'V
     | Branch of Tree<'V>[]
 
+    [<TailCall>]
     override n.ToString() =
         let rec stringize sb =
             function
@@ -1092,6 +1131,7 @@ module Grid =
 
     /// Builds a new grid whose items are the results of applying the given function to each of the items of the grid.
     /// The tuple passed to the function indicates the X-Y coordinates of item being transformed, starting at (0,0).
+    [<TailCall>]
     let inline fold
         ([<InlineIfLambda>] folder: 'StateT -> Coordinates -> 'T -> 'StateT)
         (state: 'StateT)
@@ -1110,6 +1150,7 @@ module Grid =
 
     /// Returns the X-Y coordinates of the first item in the grid that satisfies the given predicate.
     /// If the item is not found, `None` is returned.
+    [<TailCall>]
     let tryPick (predicate: Coordinates -> 'T -> 'U option) (grid: Grid<'T>) =
         let rec loop x y =
             if y >= grid.Length then
@@ -1159,6 +1200,7 @@ module Grid =
         }
 
     /// Breadth-first flood fill. Stack-safe at the expense of speed and memory.
+    [<TailCall>]
     let floodFn x y fn grid =
         let oldValue = grid |> item x y
 
@@ -1230,10 +1272,13 @@ module Grid =
     let inline printfn grid = printfnSep "" grid
 
 /// Splits a string of text into an array of individual lines (delimited by `\n`).
-/// All lines are trimmed and empty lines and discarded.
-let parseInputText (text: string) =
-    text
-    |> String.splitO "\n" (StringSplitOptions.TrimEntries ||| StringSplitOptions.RemoveEmptyEntries)
+/// All lines are trimmed. Empty lines are _not_ discarded.
+let (|TextLines|) = String.trim >> String.splitO "\n" StringSplitOptions.TrimEntries
+
+/// Splits a string of text into an array of individual lines (delimited by `\n`).
+/// All lines are trimmed. Empty lines _are_ discarded.
+let parseInputText (TextLines text: string) =
+    text |> Array.where (not << String.isEmpty)
 
 /// Converts a collection of strings into an array of character arrays.
 let toCharArrays (strings: string seq) =
@@ -1271,6 +1316,7 @@ let toGroups groupPrefix (strings: string[]) =
 /// is over and the function returns the middle value. Otherwise, if the
 /// predicate return < 0, the function searches the left half of the range,
 /// else the right half. If it runs out of integers to search, None is returned.
+[<TailCall>]
 let rec binarySearch n m pred =
     if n > m then
         binarySearch m n pred
