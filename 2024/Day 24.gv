@@ -1,0 +1,1429 @@
+digraph G {
+    fontname = "Helvetica,Arial,sans-serif";
+	node [fontname = "Helvetica,Arial,sans-serif"; shape = "cds"; style = "filled"; color = "gray60";];
+	edge [fontname = "Helvetica,Arial,sans-serif";];
+	layout = neato;
+    // concentrate = true;
+    x00 [color = "green";];
+    x01 [color = "green";];
+    x02 [color = "green";];
+    x03 [color = "green";];
+    x04 [color = "green";];
+    x05 [color = "green";];
+    x06 [color = "green";];
+    x07 [color = "green";];
+    x08 [color = "green";];
+    x09 [color = "green";];
+    x10 [color = "green";];
+    x11 [color = "green";];
+    x12 [color = "green";];
+    x13 [color = "green";];
+    x14 [color = "green";];
+    x15 [color = "green";];
+    x16 [color = "green";];
+    x17 [color = "green";];
+    x18 [color = "green";];
+    x19 [color = "green";];
+    x20 [color = "green";];
+    x21 [color = "green";];
+    x22 [color = "green";];
+    x23 [color = "green";];
+    x24 [color = "green";];
+    x25 [color = "green";];
+    x26 [color = "green";];
+    x27 [color = "green";];
+    x28 [color = "green";];
+    x29 [color = "green";];
+    x30 [color = "green";];
+    x31 [color = "green";];
+    x32 [color = "green";];
+    x33 [color = "green";];
+    x34 [color = "green";];
+    x35 [color = "green";];
+    x36 [color = "green";];
+    x37 [color = "green";];
+    x38 [color = "green";];
+    x39 [color = "green";];
+    x40 [color = "green";];
+    x41 [color = "green";];
+    x42 [color = "green";];
+    x43 [color = "green";];
+    x44 [color = "green";];
+    y00 [color = "yellow";];
+    y01 [color = "yellow";];
+    y02 [color = "yellow";];
+    y03 [color = "yellow";];
+    y04 [color = "yellow";];
+    y05 [color = "yellow";];
+    y06 [color = "yellow";];
+    y07 [color = "yellow";];
+    y08 [color = "yellow";];
+    y09 [color = "yellow";];
+    y10 [color = "yellow";];
+    y11 [color = "yellow";];
+    y12 [color = "yellow";];
+    y13 [color = "yellow";];
+    y14 [color = "yellow";];
+    y15 [color = "yellow";];
+    y16 [color = "yellow";];
+    y17 [color = "yellow";];
+    y18 [color = "yellow";];
+    y19 [color = "yellow";];
+    y20 [color = "yellow";];
+    y21 [color = "yellow";];
+    y22 [color = "yellow";];
+    y23 [color = "yellow";];
+    y24 [color = "yellow";];
+    y25 [color = "yellow";];
+    y26 [color = "yellow";];
+    y27 [color = "yellow";];
+    y28 [color = "yellow";];
+    y29 [color = "yellow";];
+    y30 [color = "yellow";];
+    y31 [color = "yellow";];
+    y32 [color = "yellow";];
+    y33 [color = "yellow";];
+    y34 [color = "yellow";];
+    y35 [color = "yellow";];
+    y36 [color = "yellow";];
+    y37 [color = "yellow";];
+    y38 [color = "yellow";];
+    y39 [color = "yellow";];
+    y40 [color = "yellow";];
+    y41 [color = "yellow";];
+    y42 [color = "yellow";];
+    y43 [color = "yellow";];
+    y44 [color = "yellow";];
+    // y41 AND x41 -> smr
+    AND_smr [label = "AND";shape = "oval";color = "lightgreen";];
+    smr [color = "";];
+    y41 -> AND_smr;
+    x41 -> AND_smr;
+    AND_smr -> smr;
+    // bsj XOR hgq -> z03
+    XOR_z03 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z03 [color = "red";];
+    bsj -> XOR_z03;
+    hgq -> XOR_z03;
+    XOR_z03 -> z03;
+    // cpj AND bwq -> qhs
+    AND_qhs [label = "AND";shape = "oval";color = "lightgreen";];
+    qhs [color = "";];
+    cpj -> AND_qhs;
+    bwq -> AND_qhs;
+    AND_qhs -> qhs;
+    // y31 AND x31 -> tvv
+    AND_tvv [label = "AND";shape = "oval";color = "lightgreen";];
+    tvv [color = "";];
+    y31 -> AND_tvv;
+    x31 -> AND_tvv;
+    AND_tvv -> tvv;
+    // fvb XOR bwt -> z11
+    XOR_z11 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z11 [color = "red";];
+    fvb -> XOR_z11;
+    bwt -> XOR_z11;
+    XOR_z11 -> z11;
+    // rgs XOR pbq -> z22
+    XOR_z22 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z22 [color = "red";];
+    rgs -> XOR_z22;
+    pbq -> XOR_z22;
+    XOR_z22 -> z22;
+    // djn OR jnn -> hrn
+    OR_hrn [label = "OR";shape = "diamond";color = "lightblue";];
+    hrn [color = "";];
+    djn -> OR_hrn;
+    jnn -> OR_hrn;
+    OR_hrn -> hrn;
+    // y28 AND x28 -> jjt
+    AND_jjt [label = "AND";shape = "oval";color = "lightgreen";];
+    jjt [color = "";];
+    y28 -> AND_jjt;
+    x28 -> AND_jjt;
+    AND_jjt -> jjt;
+    // wbk AND dcr -> whj
+    AND_whj [label = "AND";shape = "oval";color = "lightgreen";];
+    whj [color = "";];
+    wbk -> AND_whj;
+    dcr -> AND_whj;
+    AND_whj -> whj;
+    // nkq AND gmg -> tfw
+    AND_tfw [label = "AND";shape = "oval";color = "lightgreen";];
+    tfw [color = "";];
+    nkq -> AND_tfw;
+    gmg -> AND_tfw;
+    AND_tfw -> tfw;
+    // y05 XOR x05 -> hqs
+    XOR_hqs [label = "XOR";shape = "hexagon";color = "salmon";];
+    hqs [color = "";];
+    y05 -> XOR_hqs;
+    x05 -> XOR_hqs;
+    XOR_hqs -> hqs;
+    // hhv OR mcs -> bwb
+    OR_bwb [label = "OR";shape = "diamond";color = "lightblue";];
+    bwb [color = "";];
+    hhv -> OR_bwb;
+    mcs -> OR_bwb;
+    OR_bwb -> bwb;
+    // x38 XOR y38 -> dss
+    XOR_dss [label = "XOR";shape = "hexagon";color = "salmon";];
+    dss [color = "";];
+    x38 -> XOR_dss;
+    y38 -> XOR_dss;
+    XOR_dss -> dss;
+    // dnj AND dss -> nmq
+    AND_nmq [label = "AND";shape = "oval";color = "lightgreen";];
+    nmq [color = "";];
+    dnj -> AND_nmq;
+    dss -> AND_nmq;
+    AND_nmq -> nmq;
+    // hgw XOR kvr -> npf
+    XOR_npf [label = "XOR";shape = "hexagon";color = "salmon";];
+    npf [color = "";];
+    hgw -> XOR_npf;
+    kvr -> XOR_npf;
+    XOR_npf -> z13;
+    // kbb OR gnn -> z45
+    OR_z45 [label = "OR";shape = "diamond";color = "lightblue";];
+    z45 [color = "red";];
+    kbb -> OR_z45;
+    gnn -> OR_z45;
+    OR_z45 -> z45;
+    // thh XOR vwd -> z16
+    XOR_z16 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z16 [color = "red";];
+    thh -> XOR_z16;
+    vwd -> XOR_z16;
+    XOR_z16 -> z16;
+    // nmq OR wdn -> wbk
+    OR_wbk [label = "OR";shape = "diamond";color = "lightblue";];
+    wbk [color = "";];
+    nmq -> OR_wbk;
+    wdn -> OR_wbk;
+    OR_wbk -> wbk;
+    // hcb XOR bkq -> z10
+    XOR_z10 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z10 [color = "red";];
+    hcb -> XOR_z10;
+    bkq -> XOR_z10;
+    XOR_z10 -> z10;
+    // x27 AND y27 -> qtt
+    AND_qtt [label = "AND";shape = "oval";color = "lightgreen";];
+    qtt [color = "";];
+    x27 -> AND_qtt;
+    y27 -> AND_qtt;
+    AND_qtt -> qtt;
+    // bwb AND nrw -> kfh
+    AND_kfh [label = "AND";shape = "oval";color = "lightgreen";];
+    kfh [color = "";];
+    bwb -> AND_kfh;
+    nrw -> AND_kfh;
+    AND_kfh -> kfh;
+    // kbn XOR kvv -> z08
+    XOR_z08 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z08 [color = "red";];
+    kbn -> XOR_z08;
+    kvv -> XOR_z08;
+    XOR_z08 -> z08;
+    // y03 XOR x03 -> bsj
+    XOR_bsj [label = "XOR";shape = "hexagon";color = "salmon";];
+    bsj [color = "";];
+    y03 -> XOR_bsj;
+    x03 -> XOR_bsj;
+    XOR_bsj -> bsj;
+    // y12 XOR x12 -> vhk
+    XOR_vhk [label = "XOR";shape = "hexagon";color = "salmon";];
+    vhk [color = "";];
+    y12 -> XOR_vhk;
+    x12 -> XOR_vhk;
+    XOR_vhk -> vhk;
+    // cjv AND sns -> rsr
+    AND_rsr [label = "AND";shape = "oval";color = "lightgreen";];
+    rsr [color = "";];
+    cjv -> AND_rsr;
+    sns -> AND_rsr;
+    AND_rsr -> rsr;
+    // rvp XOR tss -> z01
+    XOR_z01 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z01 [color = "red";];
+    rvp -> XOR_z01;
+    tss -> XOR_z01;
+    XOR_z01 -> z01;
+    // tss AND rvp -> bcr
+    AND_bcr [label = "AND";shape = "oval";color = "lightgreen";];
+    bcr [color = "";];
+    tss -> AND_bcr;
+    rvp -> AND_bcr;
+    AND_bcr -> bcr;
+    // vhk XOR crc -> z12
+    XOR_z12 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z12 [color = "red";];
+    vhk -> XOR_z12;
+    crc -> XOR_z12;
+    XOR_z12 -> z12;
+    // cpm OR hqj -> tgg
+    OR_tgg [label = "OR";shape = "diamond";color = "lightblue";];
+    tgg [color = "";];
+    cpm -> OR_tgg;
+    hqj -> OR_tgg;
+    OR_tgg -> tgg;
+    // x30 XOR y30 -> gsd
+    XOR_gsd [label = "XOR";shape = "hexagon";color = "salmon";];
+    gsd [color = "";];
+    x30 -> XOR_gsd;
+    y30 -> XOR_gsd;
+    XOR_gsd -> gsd;
+    // y00 AND x00 -> tss
+    AND_tss [label = "AND";shape = "oval";color = "lightgreen";];
+    tss [color = "";];
+    y00 -> AND_tss;
+    x00 -> AND_tss;
+    AND_tss -> tss;
+    // vgm AND fhs -> fwc
+    AND_fwc [label = "AND";shape = "oval";color = "lightgreen";];
+    fwc [color = "";];
+    vgm -> AND_fwc;
+    fhs -> AND_fwc;
+    AND_fwc -> fwc;
+    // y07 AND x07 -> dmj
+    AND_dmj [label = "AND";shape = "oval";color = "lightgreen";];
+    dmj [color = "";];
+    y07 -> AND_dmj;
+    x07 -> AND_dmj;
+    AND_dmj -> dmj;
+    // x21 AND y21 -> cpc
+    AND_cpc [label = "AND";shape = "oval";color = "lightgreen";];
+    cpc [color = "";];
+    x21 -> AND_cpc;
+    y21 -> AND_cpc;
+    AND_cpc -> cpc;
+    // y08 XOR x08 -> kvv
+    XOR_kvv [label = "XOR";shape = "hexagon";color = "salmon";];
+    kvv [color = "";];
+    y08 -> XOR_kvv;
+    x08 -> XOR_kvv;
+    XOR_kvv -> kvv;
+    // x29 AND y29 -> wfp
+    AND_wfp [label = "AND";shape = "oval";color = "lightgreen";];
+    wfp [color = "";];
+    x29 -> AND_wfp;
+    y29 -> AND_wfp;
+    AND_wfp -> wfp;
+    // grg OR nmr -> thh
+    OR_thh [label = "OR";shape = "diamond";color = "lightblue";];
+    thh [color = "";];
+    grg -> OR_thh;
+    nmr -> OR_thh;
+    OR_thh -> thh;
+    // x24 AND y24 -> vvb
+    AND_vvb [label = "AND";shape = "oval";color = "lightgreen";];
+    vvb [color = "";];
+    x24 -> AND_vvb;
+    y24 -> AND_vvb;
+    AND_vvb -> vvb;
+    // qdb OR fwc -> jsf
+    OR_jsf [label = "OR";shape = "diamond";color = "lightblue";];
+    jsf [color = "";];
+    qdb -> OR_jsf;
+    fwc -> OR_jsf;
+    OR_jsf -> jsf;
+    // dkv OR smr -> wdg
+    OR_wdg [label = "OR";shape = "diamond";color = "lightblue";];
+    wdg [color = "";];
+    dkv -> OR_wdg;
+    smr -> OR_wdg;
+    OR_wdg -> wdg;
+    // dpk OR cpc -> pbq
+    OR_pbq [label = "OR";shape = "diamond";color = "lightblue";];
+    pbq [color = "";];
+    dpk -> OR_pbq;
+    cpc -> OR_pbq;
+    OR_pbq -> pbq;
+    // hrn AND ngg -> dkv
+    AND_dkv [label = "AND";shape = "oval";color = "lightgreen";];
+    dkv [color = "";];
+    hrn -> AND_dkv;
+    ngg -> AND_dkv;
+    AND_dkv -> dkv;
+    // y26 AND x26 -> fmq
+    AND_fmq [label = "AND";shape = "oval";color = "lightgreen";];
+    fmq [color = "";];
+    y26 -> AND_fmq;
+    x26 -> AND_fmq;
+    AND_fmq -> fmq;
+    // qnc XOR tgg -> z36
+    XOR_z36 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z36 [color = "red";];
+    qnc -> XOR_z36;
+    tgg -> XOR_z36;
+    XOR_z36 -> z36;
+    // y06 XOR x06 -> kwr
+    XOR_kwr [label = "XOR";shape = "hexagon";color = "salmon";];
+    kwr [color = "";];
+    y06 -> XOR_kwr;
+    x06 -> XOR_kwr;
+    XOR_kwr -> kwr;
+    // pcf XOR vrt -> z26
+    XOR_z26 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z26 [color = "red";];
+    pcf -> XOR_z26;
+    vrt -> XOR_z26;
+    XOR_z26 -> z26;
+    // bjn AND qkc -> djn
+    AND_djn [label = "AND";shape = "oval";color = "lightgreen";];
+    djn [color = "";];
+    bjn -> AND_djn;
+    qkc -> AND_djn;
+    AND_djn -> djn;
+    // y41 XOR x41 -> ngg
+    XOR_ngg [label = "XOR";shape = "hexagon";color = "salmon";];
+    ngg [color = "";];
+    y41 -> XOR_ngg;
+    x41 -> XOR_ngg;
+    XOR_ngg -> ngg;
+    // x18 XOR y18 -> sqn
+    XOR_sqn [label = "XOR";shape = "hexagon";color = "salmon";];
+    sqn [color = "";];
+    x18 -> XOR_sqn;
+    y18 -> XOR_sqn;
+    XOR_sqn -> sqn;
+    // fmq OR cpb -> cjv
+    OR_cjv [label = "OR";shape = "diamond";color = "lightblue";];
+    cjv [color = "";];
+    fmq -> OR_cjv;
+    cpb -> OR_cjv;
+    OR_cjv -> cjv;
+    // x40 XOR y40 -> qkc
+    XOR_qkc [label = "XOR";shape = "hexagon";color = "salmon";];
+    qkc [color = "";];
+    x40 -> XOR_qkc;
+    y40 -> XOR_qkc;
+    XOR_qkc -> qkc;
+    // gch XOR fgn -> z28
+    XOR_z28 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z28 [color = "red";];
+    gch -> XOR_z28;
+    fgn -> XOR_z28;
+    XOR_z28 -> z28;
+    // y02 XOR x02 -> ccn
+    XOR_ccn [label = "XOR";shape = "hexagon";color = "salmon";];
+    ccn [color = "";];
+    y02 -> XOR_ccn;
+    x02 -> XOR_ccn;
+    XOR_ccn -> ccn;
+    // y23 XOR x23 -> nrw
+    XOR_nrw [label = "XOR";shape = "hexagon";color = "salmon";];
+    nrw [color = "";];
+    y23 -> XOR_nrw;
+    x23 -> XOR_nrw;
+    XOR_nrw -> nrw;
+    // x22 AND y22 -> mcs
+    AND_mcs [label = "AND";shape = "oval";color = "lightgreen";];
+    mcs [color = "";];
+    x22 -> AND_mcs;
+    y22 -> AND_mcs;
+    AND_mcs -> mcs;
+    // fvb AND bwt -> wcm
+    AND_wcm [label = "AND";shape = "oval";color = "lightgreen";];
+    wcm [color = "";];
+    fvb -> AND_wcm;
+    bwt -> AND_wcm;
+    AND_wcm -> wcm;
+    // fsn OR vvb -> qqb
+    OR_qqb [label = "OR";shape = "diamond";color = "lightblue";];
+    qqb [color = "";];
+    fsn -> OR_qqb;
+    vvb -> OR_qqb;
+    OR_qqb -> qqb;
+    // y28 XOR x28 -> gch
+    XOR_gch [label = "XOR";shape = "hexagon";color = "salmon";];
+    gch [color = "";];
+    y28 -> XOR_gch;
+    x28 -> XOR_gch;
+    XOR_gch -> gch;
+    // ndw XOR bfr -> z17
+    XOR_z17 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z17 [color = "red";];
+    ndw -> XOR_z17;
+    bfr -> XOR_z17;
+    XOR_z17 -> z17;
+    // x10 AND y10 -> jbn
+    AND_jbn [label = "AND";shape = "oval";color = "lightgreen";];
+    jbn [color = "";];
+    x10 -> AND_jbn;
+    y10 -> AND_jbn;
+    AND_jbn -> jbn;
+    // y34 AND x34 -> rss
+    AND_rss [label = "AND";shape = "oval";color = "lightgreen";];
+    rss [color = "";];
+    y34 -> AND_rss;
+    x34 -> AND_rss;
+    AND_rss -> rss;
+    // x01 AND y01 -> jcr
+    AND_jcr [label = "AND";shape = "oval";color = "lightgreen";];
+    jcr [color = "";];
+    x01 -> AND_jcr;
+    y01 -> AND_jcr;
+    AND_jcr -> jcr;
+    // x34 XOR y34 -> cnd
+    XOR_cnd [label = "XOR";shape = "hexagon";color = "salmon";];
+    cnd [color = "";];
+    x34 -> XOR_cnd;
+    y34 -> XOR_cnd;
+    XOR_cnd -> cnd;
+    // nfc XOR rsw -> z04
+    XOR_z04 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z04 [color = "red";];
+    nfc -> XOR_z04;
+    rsw -> XOR_z04;
+    XOR_z04 -> z04;
+    // dcr XOR wbk -> z39
+    XOR_z39 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z39 [color = "red";];
+    dcr -> XOR_z39;
+    wbk -> XOR_z39;
+    XOR_z39 -> z39;
+    // x35 XOR y35 -> rnk
+    XOR_rnk [label = "XOR";shape = "hexagon";color = "salmon";];
+    rnk [color = "";];
+    x35 -> XOR_rnk;
+    y35 -> XOR_rnk;
+    XOR_rnk -> rnk;
+    // sqn XOR tkw -> z18
+    XOR_z18 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z18 [color = "red";];
+    sqn -> XOR_z18;
+    tkw -> XOR_z18;
+    XOR_z18 -> z18;
+    // gns OR wfc -> fhs
+    OR_fhs [label = "OR";shape = "diamond";color = "lightblue";];
+    fhs [color = "";];
+    gns -> OR_fhs;
+    wfc -> OR_fhs;
+    OR_fhs -> fhs;
+    // y44 AND x44 -> gnn
+    AND_gnn [label = "AND";shape = "oval";color = "lightgreen";];
+    gnn [color = "";];
+    y44 -> AND_gnn;
+    x44 -> AND_gnn;
+    AND_gnn -> gnn;
+    // y39 XOR x39 -> dcr
+    XOR_dcr [label = "XOR";shape = "hexagon";color = "salmon";];
+    dcr [color = "";];
+    y39 -> XOR_dcr;
+    x39 -> XOR_dcr;
+    XOR_dcr -> dcr;
+    // sqn AND tkw -> mdc
+    AND_mdc [label = "AND";shape = "oval";color = "lightgreen";];
+    mdc [color = "";];
+    sqn -> AND_mdc;
+    tkw -> AND_mdc;
+    AND_mdc -> mdc;
+    // y03 AND x03 -> wkg
+    AND_wkg [label = "AND";shape = "oval";color = "lightgreen";];
+    wkg [color = "";];
+    y03 -> AND_wkg;
+    x03 -> AND_wkg;
+    AND_wkg -> wkg;
+    // wvn AND cnd -> stw
+    AND_stw [label = "AND";shape = "oval";color = "lightgreen";];
+    stw [color = "";];
+    wvn -> AND_stw;
+    cnd -> AND_stw;
+    AND_stw -> stw;
+    // x06 AND y06 -> gqj
+    AND_gqj [label = "AND";shape = "oval";color = "lightgreen";];
+    gqj [color = "";];
+    x06 -> AND_gqj;
+    y06 -> AND_gqj;
+    AND_gqj -> gqj;
+    // x23 AND y23 -> fcf
+    AND_fcf [label = "AND";shape = "oval";color = "lightgreen";];
+    fcf [color = "";];
+    x23 -> AND_fcf;
+    y23 -> AND_fcf;
+    AND_fcf -> fcf;
+    // jsf XOR tsc -> z44
+    XOR_z44 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z44 [color = "red";];
+    jsf -> XOR_z44;
+    tsc -> XOR_z44;
+    XOR_z44 -> z44;
+    // rsw AND nfc -> pkg
+    AND_pkg [label = "AND";shape = "oval";color = "lightgreen";];
+    pkg [color = "";];
+    rsw -> AND_pkg;
+    nfc -> AND_pkg;
+    AND_pkg -> pkg;
+    // x37 AND y37 -> ksq
+    AND_ksq [label = "AND";shape = "oval";color = "lightgreen";];
+    ksq [color = "";];
+    x37 -> AND_ksq;
+    y37 -> AND_ksq;
+    AND_ksq -> ksq;
+    // y04 AND x04 -> hct
+    AND_hct [label = "AND";shape = "oval";color = "lightgreen";];
+    hct [color = "";];
+    y04 -> AND_hct;
+    x04 -> AND_hct;
+    AND_hct -> hct;
+    // x31 XOR y31 -> stn
+    XOR_stn [label = "XOR";shape = "hexagon";color = "salmon";];
+    stn [color = "";];
+    x31 -> XOR_stn;
+    y31 -> XOR_stn;
+    XOR_stn -> stn;
+    // y38 AND x38 -> wdn
+    AND_wdn [label = "AND";shape = "oval";color = "lightgreen";];
+    wdn [color = "";];
+    y38 -> AND_wdn;
+    x38 -> AND_wdn;
+    AND_wdn -> wdn;
+    // rsm AND fnq -> dgm
+    AND_dgm [label = "AND";shape = "oval";color = "lightgreen";];
+    dgm [color = "";];
+    rsm -> AND_dgm;
+    fnq -> AND_dgm;
+    AND_dgm -> dgm;
+    // y29 XOR x29 -> cpj
+    XOR_cpj [label = "XOR";shape = "hexagon";color = "salmon";];
+    cpj [color = "";];
+    y29 -> XOR_cpj;
+    x29 -> XOR_cpj;
+    XOR_cpj -> cpj;
+    // pcb XOR pgc -> z21
+    XOR_z21 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z21 [color = "red";];
+    pcb -> XOR_z21;
+    pgc -> XOR_z21;
+    XOR_z21 -> z21;
+    // bfq OR gmp -> pcf
+    OR_pcf [label = "OR";shape = "diamond";color = "lightblue";];
+    pcf [color = "";];
+    bfq -> OR_pcf;
+    gmp -> OR_pcf;
+    OR_pcf -> pcf;
+    // thh AND vwd -> cdw
+    AND_cdw [label = "AND";shape = "oval";color = "lightgreen";];
+    cdw [color = "";];
+    thh -> AND_cdw;
+    vwd -> AND_cdw;
+    AND_cdw -> cdw;
+    // y43 XOR x43 -> vgm
+    XOR_vgm [label = "XOR";shape = "hexagon";color = "salmon";];
+    vgm [color = "";];
+    y43 -> XOR_vgm;
+    x43 -> XOR_vgm;
+    XOR_vgm -> vgm;
+    // bkq AND hcb -> qvn
+    AND_qvn [label = "AND";shape = "oval";color = "lightgreen";];
+    qvn [color = "";];
+    bkq -> AND_qvn;
+    hcb -> AND_qvn;
+    AND_qvn -> qvn;
+    // cnd XOR wvn -> z34
+    XOR_z34 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z34 [color = "red";];
+    cnd -> XOR_z34;
+    wvn -> XOR_z34;
+    XOR_z34 -> z34;
+    // rgs AND pbq -> hhv
+    AND_hhv [label = "AND";shape = "oval";color = "lightgreen";];
+    hhv [color = "";];
+    rgs -> AND_hhv;
+    pbq -> AND_hhv;
+    AND_hhv -> hhv;
+    // wtm XOR wgq -> hgj
+    XOR_hgj [label = "XOR";shape = "hexagon";color = "salmon";];
+    hgj [color = "";];
+    wtm -> XOR_hgj;
+    wgq -> XOR_hgj;
+    XOR_hgj -> z33;
+    // x36 XOR y36 -> qnc
+    XOR_qnc [label = "XOR";shape = "hexagon";color = "salmon";];
+    qnc [color = "";];
+    x36 -> XOR_qnc;
+    y36 -> XOR_qnc;
+    XOR_qnc -> qnc;
+    // ngg XOR hrn -> z41
+    XOR_z41 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z41 [color = "red";];
+    ngg -> XOR_z41;
+    hrn -> XOR_z41;
+    XOR_z41 -> z41;
+    // y18 AND x18 -> fbp
+    AND_fbp [label = "AND";shape = "oval";color = "lightgreen";];
+    fbp [color = "";];
+    y18 -> AND_fbp;
+    x18 -> AND_fbp;
+    AND_fbp -> fbp;
+    // hgq AND bsj -> tqt
+    AND_tqt [label = "AND";shape = "oval";color = "lightgreen";];
+    tqt [color = "";];
+    hgq -> AND_tqt;
+    bsj -> AND_tqt;
+    AND_tqt -> tqt;
+    // mbh AND hqs -> fgr
+    AND_fgr [label = "AND";shape = "oval";color = "lightgreen";];
+    fgr [color = "";];
+    mbh -> AND_fgr;
+    hqs -> AND_fgr;
+    AND_fgr -> fgr;
+    // hqs XOR mbh -> z05
+    XOR_z05 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z05 [color = "red";];
+    hqs -> XOR_z05;
+    mbh -> XOR_z05;
+    XOR_z05 -> z05;
+    // svf OR bgf -> hgw
+    OR_hgw [label = "OR";shape = "diamond";color = "lightblue";];
+    hgw [color = "";];
+    svf -> OR_hgw;
+    bgf -> OR_hgw;
+    OR_hgw -> hgw;
+    // btg AND ghj -> wwc
+    AND_wwc [label = "AND";shape = "oval";color = "lightgreen";];
+    wwc [color = "";];
+    btg -> AND_wwc;
+    ghj -> AND_wwc;
+    AND_wwc -> wwc;
+    // kfh OR fcf -> vgp
+    OR_vgp [label = "OR";shape = "diamond";color = "lightblue";];
+    vgp [color = "";];
+    kfh -> OR_vgp;
+    fcf -> OR_vgp;
+    OR_vgp -> vgp;
+    // x13 AND y13 -> fmh
+    AND_fmh [label = "AND";shape = "oval";color = "lightgreen";];
+    fmh [color = "";];
+    x13 -> AND_fmh;
+    y13 -> AND_fmh;
+    AND_fmh -> fmh;
+    // wgq AND wtm -> z33
+    AND_z33 [label = "AND";shape = "oval";color = "lightgreen";];
+    z33 [color = "red";];
+    wgq -> AND_z33;
+    wtm -> AND_z33;
+    AND_z33 -> hgj;
+    // dhb OR tvv -> gmj
+    OR_gmj [label = "OR";shape = "diamond";color = "lightblue";];
+    gmj [color = "";];
+    dhb -> OR_gmj;
+    tvv -> OR_gmj;
+    OR_gmj -> gmj;
+    // kwr XOR vdv -> z06
+    XOR_z06 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z06 [color = "red";];
+    kwr -> XOR_z06;
+    vdv -> XOR_z06;
+    XOR_z06 -> z06;
+    // rnk XOR fwd -> z35
+    XOR_z35 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z35 [color = "red";];
+    rnk -> XOR_z35;
+    fwd -> XOR_z35;
+    XOR_z35 -> z35;
+    // tkr OR hhm -> hgq
+    OR_hgq [label = "OR";shape = "diamond";color = "lightblue";];
+    hgq [color = "";];
+    tkr -> OR_hgq;
+    hhm -> OR_hgq;
+    OR_hgq -> hgq;
+    // y09 XOR x09 -> nnt
+    XOR_nnt [label = "XOR";shape = "hexagon";color = "salmon";];
+    nnt [color = "";];
+    y09 -> XOR_nnt;
+    x09 -> XOR_nnt;
+    XOR_nnt -> gws;
+    // rnk AND fwd -> hqj
+    AND_hqj [label = "AND";shape = "oval";color = "lightgreen";];
+    hqj [color = "";];
+    rnk -> AND_hqj;
+    fwd -> AND_hqj;
+    AND_hqj -> hqj;
+    // wkg OR tqt -> nfc
+    OR_nfc [label = "OR";shape = "diamond";color = "lightblue";];
+    nfc [color = "";];
+    wkg -> OR_nfc;
+    tqt -> OR_nfc;
+    OR_nfc -> nfc;
+    // cdw OR jtb -> ndw
+    OR_ndw [label = "OR";shape = "diamond";color = "lightblue";];
+    ndw [color = "";];
+    cdw -> OR_ndw;
+    jtb -> OR_ndw;
+    OR_ndw -> ndw;
+    // fkb AND vgp -> fsn
+    AND_fsn [label = "AND";shape = "oval";color = "lightgreen";];
+    fsn [color = "";];
+    fkb -> AND_fsn;
+    vgp -> AND_fsn;
+    AND_fsn -> fsn;
+    // x24 XOR y24 -> fkb
+    XOR_fkb [label = "XOR";shape = "hexagon";color = "salmon";];
+    fkb [color = "";];
+    x24 -> XOR_fkb;
+    y24 -> XOR_fkb;
+    XOR_fkb -> fkb;
+    // y26 XOR x26 -> vrt
+    XOR_vrt [label = "XOR";shape = "hexagon";color = "salmon";];
+    vrt [color = "";];
+    y26 -> XOR_vrt;
+    x26 -> XOR_vrt;
+    XOR_vrt -> vrt;
+    // x19 XOR y19 -> fnq
+    XOR_fnq [label = "XOR";shape = "hexagon";color = "salmon";];
+    fnq [color = "";];
+    x19 -> XOR_fnq;
+    y19 -> XOR_fnq;
+    XOR_fnq -> fnq;
+    // nkq XOR gmg -> z37
+    XOR_z37 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z37 [color = "red";];
+    nkq -> XOR_z37;
+    gmg -> XOR_z37;
+    XOR_z37 -> z37;
+    // y22 XOR x22 -> rgs
+    XOR_rgs [label = "XOR";shape = "hexagon";color = "salmon";];
+    rgs [color = "";];
+    y22 -> XOR_rgs;
+    x22 -> XOR_rgs;
+    XOR_rgs -> rgs;
+    // pcd XOR gws -> z09
+    XOR_z09 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z09 [color = "red";];
+    pcd -> XOR_z09;
+    gws -> XOR_z09;
+    XOR_z09 -> z09;
+    // ccn AND tdp -> tkr
+    AND_tkr [label = "AND";shape = "oval";color = "lightgreen";];
+    tkr [color = "";];
+    ccn -> AND_tkr;
+    tdp -> AND_tkr;
+    AND_tkr -> tkr;
+    // pcf AND vrt -> cpb
+    AND_cpb [label = "AND";shape = "oval";color = "lightgreen";];
+    cpb [color = "";];
+    pcf -> AND_cpb;
+    vrt -> AND_cpb;
+    AND_cpb -> cpb;
+    // hct OR pkg -> mbh
+    OR_mbh [label = "OR";shape = "diamond";color = "lightblue";];
+    mbh [color = "";];
+    hct -> OR_mbh;
+    pkg -> OR_mbh;
+    OR_mbh -> mbh;
+    // fmp OR wcm -> crc
+    OR_crc [label = "OR";shape = "diamond";color = "lightblue";];
+    crc [color = "";];
+    fmp -> OR_crc;
+    wcm -> OR_crc;
+    OR_crc -> crc;
+    // y32 AND x32 -> mhn
+    AND_mhn [label = "AND";shape = "oval";color = "lightgreen";];
+    mhn [color = "";];
+    y32 -> AND_mhn;
+    x32 -> AND_mhn;
+    AND_mhn -> mhn;
+    // stn AND rkn -> dhb
+    AND_dhb [label = "AND";shape = "oval";color = "lightgreen";];
+    dhb [color = "";];
+    stn -> AND_dhb;
+    rkn -> AND_dhb;
+    AND_dhb -> dhb;
+    // mtk AND gmj -> mmg
+    AND_mmg [label = "AND";shape = "oval";color = "lightgreen";];
+    mmg [color = "";];
+    mtk -> AND_mmg;
+    gmj -> AND_mmg;
+    AND_mmg -> mmg;
+    // y14 XOR x14 -> tbd
+    XOR_tbd [label = "XOR";shape = "hexagon";color = "salmon";];
+    tbd [color = "";];
+    y14 -> XOR_tbd;
+    x14 -> XOR_tbd;
+    XOR_tbd -> tbd;
+    // y08 AND x08 -> dvh
+    AND_dvh [label = "AND";shape = "oval";color = "lightgreen";];
+    dvh [color = "";];
+    y08 -> AND_dvh;
+    x08 -> AND_dvh;
+    AND_dvh -> dvh;
+    // bct XOR wdg -> z42
+    XOR_z42 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z42 [color = "red";];
+    bct -> XOR_z42;
+    wdg -> XOR_z42;
+    XOR_z42 -> z42;
+    // crr AND jgw -> cqs
+    AND_cqs [label = "AND";shape = "oval";color = "lightgreen";];
+    cqs [color = "";];
+    crr -> AND_cqs;
+    jgw -> AND_cqs;
+    AND_cqs -> cqs;
+    // y25 XOR x25 -> sws
+    XOR_sws [label = "XOR";shape = "hexagon";color = "salmon";];
+    sws [color = "";];
+    y25 -> XOR_sws;
+    x25 -> XOR_sws;
+    XOR_sws -> sws;
+    // x33 XOR y33 -> wtm
+    XOR_wtm [label = "XOR";shape = "hexagon";color = "salmon";];
+    wtm [color = "";];
+    x33 -> XOR_wtm;
+    y33 -> XOR_wtm;
+    XOR_wtm -> wtm;
+    // bct AND wdg -> gns
+    AND_gns [label = "AND";shape = "oval";color = "lightgreen";];
+    gns [color = "";];
+    bct -> AND_gns;
+    wdg -> AND_gns;
+    AND_gns -> gns;
+    // bwb XOR nrw -> z23
+    XOR_z23 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z23 [color = "red";];
+    bwb -> XOR_z23;
+    nrw -> XOR_z23;
+    XOR_z23 -> z23;
+    // y15 AND x15 -> grg
+    AND_grg [label = "AND";shape = "oval";color = "lightgreen";];
+    grg [color = "";];
+    y15 -> AND_grg;
+    x15 -> AND_grg;
+    AND_grg -> grg;
+    // x21 XOR y21 -> pcb
+    XOR_pcb [label = "XOR";shape = "hexagon";color = "salmon";];
+    pcb [color = "";];
+    x21 -> XOR_pcb;
+    y21 -> XOR_pcb;
+    XOR_pcb -> pcb;
+    // y14 AND x14 -> whd
+    AND_whd [label = "AND";shape = "oval";color = "lightgreen";];
+    whd [color = "";];
+    y14 -> AND_whd;
+    x14 -> AND_whd;
+    AND_whd -> whd;
+    // qqb XOR sws -> z25
+    XOR_z25 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z25 [color = "red";];
+    qqb -> XOR_z25;
+    sws -> XOR_z25;
+    XOR_z25 -> z25;
+    // fhs XOR vgm -> z43
+    XOR_z43 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z43 [color = "red";];
+    fhs -> XOR_z43;
+    vgm -> XOR_z43;
+    XOR_z43 -> z43;
+    // fvk OR hgj -> wvn
+    OR_wvn [label = "OR";shape = "diamond";color = "lightblue";];
+    wvn [color = "";];
+    fvk -> OR_wvn;
+    hgj -> OR_wvn;
+    OR_wvn -> wvn;
+    // crr XOR jgw -> z20
+    XOR_z20 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z20 [color = "red";];
+    crr -> XOR_z20;
+    jgw -> XOR_z20;
+    XOR_z20 -> z20;
+    // x07 XOR y07 -> btg
+    XOR_btg [label = "XOR";shape = "hexagon";color = "salmon";];
+    btg [color = "";];
+    x07 -> XOR_btg;
+    y07 -> XOR_btg;
+    XOR_btg -> btg;
+    // qnc AND tgg -> ghc
+    AND_ghc [label = "AND";shape = "oval";color = "lightgreen";];
+    ghc [color = "";];
+    qnc -> AND_ghc;
+    tgg -> AND_ghc;
+    AND_ghc -> ghc;
+    // hgw AND kvr -> tqs
+    AND_tqs [label = "AND";shape = "oval";color = "lightgreen";];
+    tqs [color = "";];
+    hgw -> AND_tqs;
+    kvr -> AND_tqs;
+    AND_tqs -> tqs;
+    // npf XOR tbd -> z14
+    XOR_z14 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z14 [color = "red";];
+    npf -> XOR_z14;
+    tbd -> XOR_z14;
+    XOR_z14 -> z14;
+    // y36 AND x36 -> bws
+    AND_bws [label = "AND";shape = "oval";color = "lightgreen";];
+    bws [color = "";];
+    y36 -> AND_bws;
+    x36 -> AND_bws;
+    AND_bws -> bws;
+    // stn XOR rkn -> z31
+    XOR_z31 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z31 [color = "red";];
+    stn -> XOR_z31;
+    rkn -> XOR_z31;
+    XOR_z31 -> z31;
+    // y16 XOR x16 -> vwd
+    XOR_vwd [label = "XOR";shape = "hexagon";color = "salmon";];
+    vwd [color = "";];
+    y16 -> XOR_vwd;
+    x16 -> XOR_vwd;
+    XOR_vwd -> vwd;
+    // whj OR std -> bjn
+    OR_bjn [label = "OR";shape = "diamond";color = "lightblue";];
+    bjn [color = "";];
+    whj -> OR_bjn;
+    std -> OR_bjn;
+    OR_bjn -> bjn;
+    // x15 XOR y15 -> rmr
+    XOR_rmr [label = "XOR";shape = "hexagon";color = "salmon";];
+    rmr [color = "";];
+    x15 -> XOR_rmr;
+    y15 -> XOR_rmr;
+    XOR_rmr -> rmr;
+    // y44 XOR x44 -> tsc
+    XOR_tsc [label = "XOR";shape = "hexagon";color = "salmon";];
+    tsc [color = "";];
+    y44 -> XOR_tsc;
+    x44 -> XOR_tsc;
+    XOR_tsc -> tsc;
+    // bcr OR jcr -> tdp
+    OR_tdp [label = "OR";shape = "diamond";color = "lightblue";];
+    tdp [color = "";];
+    bcr -> OR_tdp;
+    jcr -> OR_tdp;
+    OR_tdp -> tdp;
+    // y12 AND x12 -> svf
+    AND_svf [label = "AND";shape = "oval";color = "lightgreen";];
+    svf [color = "";];
+    y12 -> AND_svf;
+    x12 -> AND_svf;
+    AND_svf -> svf;
+    // gsd AND vqg -> whp
+    AND_whp [label = "AND";shape = "oval";color = "lightgreen";];
+    whp [color = "";];
+    gsd -> AND_whp;
+    vqg -> AND_whp;
+    AND_whp -> whp;
+    // y17 XOR x17 -> bfr
+    XOR_bfr [label = "XOR";shape = "hexagon";color = "salmon";];
+    bfr [color = "";];
+    y17 -> XOR_bfr;
+    x17 -> XOR_bfr;
+    XOR_bfr -> bfr;
+    // y32 XOR x32 -> mtk
+    XOR_mtk [label = "XOR";shape = "hexagon";color = "salmon";];
+    mtk [color = "";];
+    y32 -> XOR_mtk;
+    x32 -> XOR_mtk;
+    XOR_mtk -> mtk;
+    // bjn XOR qkc -> z40
+    XOR_z40 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z40 [color = "red";];
+    bjn -> XOR_z40;
+    qkc -> XOR_z40;
+    XOR_z40 -> z40;
+    // x20 XOR y20 -> jgw
+    XOR_jgw [label = "XOR";shape = "hexagon";color = "salmon";];
+    jgw [color = "";];
+    x20 -> XOR_jgw;
+    y20 -> XOR_jgw;
+    XOR_jgw -> jgw;
+    // x11 XOR y11 -> bwt
+    XOR_bwt [label = "XOR";shape = "hexagon";color = "salmon";];
+    bwt [color = "";];
+    x11 -> XOR_bwt;
+    y11 -> XOR_bwt;
+    XOR_bwt -> bwt;
+    // wwr OR kfn -> tkw
+    OR_tkw [label = "OR";shape = "diamond";color = "lightblue";];
+    tkw [color = "";];
+    wwr -> OR_tkw;
+    kfn -> OR_tkw;
+    OR_tkw -> tkw;
+    // x09 AND y09 -> gws
+    AND_gws [label = "AND";shape = "oval";color = "lightgreen";];
+    gws [color = "";];
+    x09 -> AND_gws;
+    y09 -> AND_gws;
+    AND_gws -> nnt;
+    // dgm OR cph -> crr
+    OR_crr [label = "OR";shape = "diamond";color = "lightblue";];
+    crr [color = "";];
+    dgm -> OR_crr;
+    cph -> OR_crr;
+    OR_crr -> crr;
+    // fgn AND gch -> gdn
+    AND_gdn [label = "AND";shape = "oval";color = "lightgreen";];
+    gdn [color = "";];
+    fgn -> AND_gdn;
+    gch -> AND_gdn;
+    AND_gdn -> gdn;
+    // x37 XOR y37 -> gmg
+    XOR_gmg [label = "XOR";shape = "hexagon";color = "salmon";];
+    gmg [color = "";];
+    x37 -> XOR_gmg;
+    y37 -> XOR_gmg;
+    XOR_gmg -> gmg;
+    // x10 XOR y10 -> bkq
+    XOR_bkq [label = "XOR";shape = "hexagon";color = "salmon";];
+    bkq [color = "";];
+    x10 -> XOR_bkq;
+    y10 -> XOR_bkq;
+    XOR_bkq -> bkq;
+    // wwc OR dmj -> kbn
+    OR_kbn [label = "OR";shape = "diamond";color = "lightblue";];
+    kbn [color = "";];
+    wwc -> OR_kbn;
+    dmj -> OR_kbn;
+    OR_kbn -> kbn;
+    // kvv AND kbn -> mdr
+    AND_mdr [label = "AND";shape = "oval";color = "lightgreen";];
+    mdr [color = "";];
+    kvv -> AND_mdr;
+    kbn -> AND_mdr;
+    AND_mdr -> mdr;
+    // rqg OR whp -> rkn
+    OR_rkn [label = "OR";shape = "diamond";color = "lightblue";];
+    rkn [color = "";];
+    rqg -> OR_rkn;
+    whp -> OR_rkn;
+    OR_rkn -> rkn;
+    // sws AND qqb -> bfq
+    AND_bfq [label = "AND";shape = "oval";color = "lightgreen";];
+    bfq [color = "";];
+    sws -> AND_bfq;
+    qqb -> AND_bfq;
+    AND_bfq -> bfq;
+    // x13 XOR y13 -> kvr
+    XOR_kvr [label = "XOR";shape = "hexagon";color = "salmon";];
+    kvr [color = "";];
+    x13 -> XOR_kvr;
+    y13 -> XOR_kvr;
+    XOR_kvr -> kvr;
+    // mdr OR dvh -> pcd
+    OR_pcd [label = "OR";shape = "diamond";color = "lightblue";];
+    pcd [color = "";];
+    mdr -> OR_pcd;
+    dvh -> OR_pcd;
+    OR_pcd -> pcd;
+    // dnj XOR dss -> z38
+    XOR_z38 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z38 [color = "red";];
+    dnj -> XOR_z38;
+    dss -> XOR_z38;
+    XOR_z38 -> z38;
+    // jbn OR qvn -> fvb
+    OR_fvb [label = "OR";shape = "diamond";color = "lightblue";];
+    fvb [color = "";];
+    jbn -> OR_fvb;
+    qvn -> OR_fvb;
+    OR_fvb -> fvb;
+    // y42 XOR x42 -> bct
+    XOR_bct [label = "XOR";shape = "hexagon";color = "salmon";];
+    bct [color = "";];
+    y42 -> XOR_bct;
+    x42 -> XOR_bct;
+    XOR_bct -> bct;
+    // mhn OR mmg -> wgq
+    OR_wgq [label = "OR";shape = "diamond";color = "lightblue";];
+    wgq [color = "";];
+    mhn -> OR_wgq;
+    mmg -> OR_wgq;
+    OR_wgq -> wgq;
+    // gws AND pcd -> tqw
+    AND_tqw [label = "AND";shape = "oval";color = "lightgreen";];
+    tqw [color = "";];
+    gws -> AND_tqw;
+    pcd -> AND_tqw;
+    AND_tqw -> tqw;
+    // y00 XOR x00 -> z00
+    XOR_z00 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z00 [color = "red";];
+    y00 -> XOR_z00;
+    x00 -> XOR_z00;
+    XOR_z00 -> z00;
+    // x11 AND y11 -> fmp
+    AND_fmp [label = "AND";shape = "oval";color = "lightgreen";];
+    fmp [color = "";];
+    x11 -> AND_fmp;
+    y11 -> AND_fmp;
+    AND_fmp -> fmp;
+    // fgr OR cqc -> vdv
+    OR_vdv [label = "OR";shape = "diamond";color = "lightblue";];
+    vdv [color = "";];
+    fgr -> OR_vdv;
+    cqc -> OR_vdv;
+    OR_vdv -> vdv;
+    // nnt OR tqw -> hcb
+    OR_hcb [label = "OR";shape = "diamond";color = "lightblue";];
+    hcb [color = "";];
+    nnt -> OR_hcb;
+    tqw -> OR_hcb;
+    OR_hcb -> hcb;
+    // kwr AND vdv -> jjp
+    AND_jjp [label = "AND";shape = "oval";color = "lightgreen";];
+    jjp [color = "";];
+    kwr -> AND_jjp;
+    vdv -> AND_jjp;
+    AND_jjp -> jjp;
+    // fkb XOR vgp -> z24
+    XOR_z24 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z24 [color = "red";];
+    fkb -> XOR_z24;
+    vgp -> XOR_z24;
+    XOR_z24 -> z24;
+    // fbp OR mdc -> rsm
+    OR_rsm [label = "OR";shape = "diamond";color = "lightblue";];
+    rsm [color = "";];
+    fbp -> OR_rsm;
+    mdc -> OR_rsm;
+    OR_rsm -> rsm;
+    // rmr AND pnt -> nmr
+    AND_nmr [label = "AND";shape = "oval";color = "lightgreen";];
+    nmr [color = "";];
+    rmr -> AND_nmr;
+    pnt -> AND_nmr;
+    AND_nmr -> nmr;
+    // x20 AND y20 -> hmh
+    AND_hmh [label = "AND";shape = "oval";color = "lightgreen";];
+    hmh [color = "";];
+    x20 -> AND_hmh;
+    y20 -> AND_hmh;
+    AND_hmh -> hmh;
+    // y05 AND x05 -> cqc
+    AND_cqc [label = "AND";shape = "oval";color = "lightgreen";];
+    cqc [color = "";];
+    y05 -> AND_cqc;
+    x05 -> AND_cqc;
+    AND_cqc -> cqc;
+    // gmj XOR mtk -> z32
+    XOR_z32 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z32 [color = "red";];
+    gmj -> XOR_z32;
+    mtk -> XOR_z32;
+    XOR_z32 -> z32;
+    // qhs OR wfp -> vqg
+    OR_vqg [label = "OR";shape = "diamond";color = "lightblue";];
+    vqg [color = "";];
+    qhs -> OR_vqg;
+    wfp -> OR_vqg;
+    OR_vqg -> vqg;
+    // vqg XOR gsd -> z30
+    XOR_z30 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z30 [color = "red";];
+    vqg -> XOR_z30;
+    gsd -> XOR_z30;
+    XOR_z30 -> z30;
+    // bws OR ghc -> nkq
+    OR_nkq [label = "OR";shape = "diamond";color = "lightblue";];
+    nkq [color = "";];
+    bws -> OR_nkq;
+    ghc -> OR_nkq;
+    OR_nkq -> nkq;
+    // y43 AND x43 -> qdb
+    AND_qdb [label = "AND";shape = "oval";color = "lightgreen";];
+    qdb [color = "";];
+    y43 -> AND_qdb;
+    x43 -> AND_qdb;
+    AND_qdb -> qdb;
+    // x16 AND y16 -> jtb
+    AND_jtb [label = "AND";shape = "oval";color = "lightgreen";];
+    jtb [color = "";];
+    x16 -> AND_jtb;
+    y16 -> AND_jtb;
+    AND_jtb -> jtb;
+    // qtt OR rsr -> fgn
+    OR_fgn [label = "OR";shape = "diamond";color = "lightblue";];
+    fgn [color = "";];
+    qtt -> OR_fgn;
+    rsr -> OR_fgn;
+    OR_fgn -> fgn;
+    // tfw OR ksq -> dnj
+    OR_dnj [label = "OR";shape = "diamond";color = "lightblue";];
+    dnj [color = "";];
+    tfw -> OR_dnj;
+    ksq -> OR_dnj;
+    OR_dnj -> dnj;
+    // tdp XOR ccn -> z02
+    XOR_z02 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z02 [color = "red";];
+    tdp -> XOR_z02;
+    ccn -> XOR_z02;
+    XOR_z02 -> z02;
+    // cpj XOR bwq -> z29
+    XOR_z29 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z29 [color = "red";];
+    cpj -> XOR_z29;
+    bwq -> XOR_z29;
+    XOR_z29 -> z29;
+    // x35 AND y35 -> cpm
+    AND_cpm [label = "AND";shape = "oval";color = "lightgreen";];
+    cpm [color = "";];
+    x35 -> AND_cpm;
+    y35 -> AND_cpm;
+    AND_cpm -> cpm;
+    // fmh OR tqs -> z13
+    OR_z13 [label = "OR";shape = "diamond";color = "lightblue";];
+    z13 [color = "red";];
+    fmh -> OR_z13;
+    tqs -> OR_z13;
+    OR_z13 -> npf;
+    // y02 AND x02 -> hhm
+    AND_hhm [label = "AND";shape = "oval";color = "lightgreen";];
+    hhm [color = "";];
+    y02 -> AND_hhm;
+    x02 -> AND_hhm;
+    AND_hhm -> hhm;
+    // x40 AND y40 -> jnn
+    AND_jnn [label = "AND";shape = "oval";color = "lightgreen";];
+    jnn [color = "";];
+    x40 -> AND_jnn;
+    y40 -> AND_jnn;
+    AND_jnn -> jnn;
+    // stw OR rss -> fwd
+    OR_fwd [label = "OR";shape = "diamond";color = "lightblue";];
+    fwd [color = "";];
+    stw -> OR_fwd;
+    rss -> OR_fwd;
+    OR_fwd -> fwd;
+    // tbd AND npf -> kdt
+    AND_kdt [label = "AND";shape = "oval";color = "lightgreen";];
+    kdt [color = "";];
+    tbd -> AND_kdt;
+    npf -> AND_kdt;
+    AND_kdt -> kdt;
+    // y42 AND x42 -> wfc
+    AND_wfc [label = "AND";shape = "oval";color = "lightgreen";];
+    wfc [color = "";];
+    y42 -> AND_wfc;
+    x42 -> AND_wfc;
+    AND_wfc -> wfc;
+    // pgc AND pcb -> dpk
+    AND_dpk [label = "AND";shape = "oval";color = "lightgreen";];
+    dpk [color = "";];
+    pgc -> AND_dpk;
+    pcb -> AND_dpk;
+    AND_dpk -> dpk;
+    // ghj XOR btg -> z07
+    XOR_z07 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z07 [color = "red";];
+    ghj -> XOR_z07;
+    btg -> XOR_z07;
+    XOR_z07 -> z07;
+    // x33 AND y33 -> fvk
+    AND_fvk [label = "AND";shape = "oval";color = "lightgreen";];
+    fvk [color = "";];
+    x33 -> AND_fvk;
+    y33 -> AND_fvk;
+    AND_fvk -> fvk;
+    // pnt XOR rmr -> z15
+    XOR_z15 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z15 [color = "red";];
+    pnt -> XOR_z15;
+    rmr -> XOR_z15;
+    XOR_z15 -> z15;
+    // tsc AND jsf -> kbb
+    AND_kbb [label = "AND";shape = "oval";color = "lightgreen";];
+    kbb [color = "";];
+    tsc -> AND_kbb;
+    jsf -> AND_kbb;
+    AND_kbb -> kbb;
+    // y39 AND x39 -> std
+    AND_std [label = "AND";shape = "oval";color = "lightgreen";];
+    std [color = "";];
+    y39 -> AND_std;
+    x39 -> AND_std;
+    AND_std -> std;
+    // y19 AND x19 -> z19
+    AND_z19 [label = "AND";shape = "oval";color = "lightgreen";];
+    z19 [color = "red";];
+    y19 -> AND_z19;
+    x19 -> AND_z19;
+    AND_z19 -> cph;
+    // x01 XOR y01 -> rvp
+    XOR_rvp [label = "XOR";shape = "hexagon";color = "salmon";];
+    rvp [color = "";];
+    x01 -> XOR_rvp;
+    y01 -> XOR_rvp;
+    XOR_rvp -> rvp;
+    // y25 AND x25 -> gmp
+    AND_gmp [label = "AND";shape = "oval";color = "lightgreen";];
+    gmp [color = "";];
+    y25 -> AND_gmp;
+    x25 -> AND_gmp;
+    AND_gmp -> gmp;
+    // x27 XOR y27 -> sns
+    XOR_sns [label = "XOR";shape = "hexagon";color = "salmon";];
+    sns [color = "";];
+    x27 -> XOR_sns;
+    y27 -> XOR_sns;
+    XOR_sns -> sns;
+    // jjp OR gqj -> ghj
+    OR_ghj [label = "OR";shape = "diamond";color = "lightblue";];
+    ghj [color = "";];
+    jjp -> OR_ghj;
+    gqj -> OR_ghj;
+    OR_ghj -> ghj;
+    // rsm XOR fnq -> cph
+    XOR_cph [label = "XOR";shape = "hexagon";color = "salmon";];
+    cph [color = "";];
+    rsm -> XOR_cph;
+    fnq -> XOR_cph;
+    XOR_cph -> z19;
+    // crc AND vhk -> bgf
+    AND_bgf [label = "AND";shape = "oval";color = "lightgreen";];
+    bgf [color = "";];
+    crc -> AND_bgf;
+    vhk -> AND_bgf;
+    AND_bgf -> bgf;
+    // x04 XOR y04 -> rsw
+    XOR_rsw [label = "XOR";shape = "hexagon";color = "salmon";];
+    rsw [color = "";];
+    x04 -> XOR_rsw;
+    y04 -> XOR_rsw;
+    XOR_rsw -> rsw;
+    // x17 AND y17 -> kfn
+    AND_kfn [label = "AND";shape = "oval";color = "lightgreen";];
+    kfn [color = "";];
+    x17 -> AND_kfn;
+    y17 -> AND_kfn;
+    AND_kfn -> kfn;
+    // y30 AND x30 -> rqg
+    AND_rqg [label = "AND";shape = "oval";color = "lightgreen";];
+    rqg [color = "";];
+    y30 -> AND_rqg;
+    x30 -> AND_rqg;
+    AND_rqg -> rqg;
+    // jjt OR gdn -> bwq
+    OR_bwq [label = "OR";shape = "diamond";color = "lightblue";];
+    bwq [color = "";];
+    jjt -> OR_bwq;
+    gdn -> OR_bwq;
+    OR_bwq -> bwq;
+    // bfr AND ndw -> wwr
+    AND_wwr [label = "AND";shape = "oval";color = "lightgreen";];
+    wwr [color = "";];
+    bfr -> AND_wwr;
+    ndw -> AND_wwr;
+    AND_wwr -> wwr;
+    // cqs OR hmh -> pgc
+    OR_pgc [label = "OR";shape = "diamond";color = "lightblue";];
+    pgc [color = "";];
+    cqs -> OR_pgc;
+    hmh -> OR_pgc;
+    OR_pgc -> pgc;
+    // whd OR kdt -> pnt
+    OR_pnt [label = "OR";shape = "diamond";color = "lightblue";];
+    pnt [color = "";];
+    whd -> OR_pnt;
+    kdt -> OR_pnt;
+    OR_pnt -> pnt;
+    // cjv XOR sns -> z27
+    XOR_z27 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z27 [color = "red";];
+    cjv -> XOR_z27;
+    sns -> XOR_z27;
+    XOR_z27 -> z27;
+}

@@ -1,0 +1,31 @@
+digraph G {
+    fontname = "Helvetica,Arial,sans-serif";
+	node [fontname = "Helvetica,Arial,sans-serif"; shape = "cds"; style = "filled"; color = "gray60";];
+	edge [fontname = "Helvetica,Arial,sans-serif";];
+	layout = neato;
+    // concentrate = true;
+    x00 [color = "green";];
+    x01 [color = "green";];
+    x02 [color = "green";];
+    y00 [color = "yellow";];
+    y01 [color = "yellow";];
+    y02 [color = "yellow";];
+    // x00 AND y00 -> z00
+    AND_z00 [label = "AND";shape = "oval";color = "lightgreen";];
+    z00 [color = "red";];
+    x00 -> AND_z00;
+    y00 -> AND_z00;
+    AND_z00 -> z00;
+    // x01 XOR y01 -> z01
+    XOR_z01 [label = "XOR";shape = "hexagon";color = "salmon";];
+    z01 [color = "red";];
+    x01 -> XOR_z01;
+    y01 -> XOR_z01;
+    XOR_z01 -> z01;
+    // x02 OR y02 -> z02
+    OR_z02 [label = "OR";shape = "diamond";color = "lightblue";];
+    z02 [color = "red";];
+    x02 -> OR_z02;
+    y02 -> OR_z02;
+    OR_z02 -> z02;
+}

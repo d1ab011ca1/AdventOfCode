@@ -20,11 +20,11 @@ type Gate =
 type InputData = (Wire * bool)[] * Gate[]
 
 let parseInput ((TextLines lines) as text) : InputData =
-    let (wires, gates) = lines |> Array.split ((=) "")
+    let (inputs, gates) = lines |> Array.split ((=) "")
     let gates = gates |> Array.skip 1
 
-    let wires =
-        wires
+    let inputs =
+        inputs
         |> Array.map (fun s ->
             match s |> Regex.matchGroups @"^(\S+): (0|1)$" with
             | Some gs -> (gs[1].Value, gs[2].Value = "1")
@@ -42,7 +42,7 @@ let parseInput ((TextLines lines) as text) : InputData =
                 | _ -> failwithf "Bad input: %A" s
             | _ -> failwithf "Bad input: %A" s)
 
-    (wires, gates) //|> dump
+    (inputs, gates) //|> dump
 
 let validateAssumptions (data: InputData) =
     // Note: `assert` does not work in FSI, so must throw exception
@@ -131,10 +131,10 @@ module Gate =
         | XOR(inA, inB, _) -> wires[inA]() <> wires[inB]()
         | AND(inA, inB, _) -> wires[inA]() && wires[inB]()
 
-let part1 ((wires, gates): InputData) =
+let execute ((inputs, gates): InputData) =
     let mutable gateMap = Dictionary()
 
-    for (w, v) in wires do
+    for (w, v) in inputs do
         gateMap.Add(w, fun () -> v)
 
     for g in gates do
@@ -156,13 +156,108 @@ let part1 ((wires, gates): InputData) =
             | true -> i ||| (1L <<< (zN.Substring 1 |> int)))
         0L
 
-let part2 ((wires, gates): InputData) =
-    //
-    0
+let writeGraphviz name ((inputs, gates): InputData) =
+    let nodesAndEdges =
+        [ for (a, _) in inputs do
+              yield $$"""{{a}} [color = "{{if a.StartsWith('x') then "green" else "yellow"}}";];"""
+
+          for g in gates do
+              match g with
+              | OR(a, b, out) ->
+                  yield $$"""// {{a}} OR {{b}} -> {{out}}"""
+                  yield $$"""OR_{{out}} [label = "OR";shape = "diamond";color = "lightblue";];"""
+                  yield $$"""{{out}} [color = "{{if out.StartsWith('z') then "red" else ""}}";];"""
+                  yield $$"""{{a}} -> OR_{{out}};"""
+                  yield $$"""{{b}} -> OR_{{out}};"""
+                  yield $$"""OR_{{out}} -> {{out}};"""
+              | XOR(a, b, out) ->
+                  yield $$"""// {{a}} XOR {{b}} -> {{out}}"""
+                  yield $$"""XOR_{{out}} [label = "XOR";shape = "hexagon";color = "salmon";];"""
+                  yield $$"""{{out}} [color = "{{if out.StartsWith('z') then "red" else ""}}";];"""
+                  yield $$"""{{a}} -> XOR_{{out}};"""
+                  yield $$"""{{b}} -> XOR_{{out}};"""
+                  yield $$"""XOR_{{out}} -> {{out}};"""
+              | AND(a, b, out) ->
+                  yield $$"""// {{a}} AND {{b}} -> {{out}}"""
+                  yield $$"""AND_{{out}} [label = "AND";shape = "oval";color = "lightgreen";];"""
+                  yield $$"""{{out}} [color = "{{if out.StartsWith('z') then "red" else ""}}";];"""
+                  yield $$"""{{a}} -> AND_{{out}};"""
+                  yield $$"""{{b}} -> AND_{{out}};"""
+                  yield $$"""AND_{{out}} -> {{out}};""" ]
+
+    IO.File.WriteAllText(
+        IO.Path.ChangeExtension(scriptPath, $"{name}.gv"),
+        $$"""digraph G {
+    fontname = "Helvetica,Arial,sans-serif";
+	node [fontname = "Helvetica,Arial,sans-serif"; shape = "cds"; style = "filled"; color = "gray60";];
+	edge [fontname = "Helvetica,Arial,sans-serif";];
+	layout = neato;
+    // concentrate = true;
+    {{nodesAndEdges |> String.join "\n    "}}
+}"""
+    )
+
+let part1 = execute
+
+let part2 ((_, gates): InputData) =
+    // find the 4 pairs of swapped gates (8 wires) preventing the graph
+    // from being a perfect adder.
+    // Solved by manually inspecting the Graphviz output.
+    let swaps = [ ("z13", "npf"); ("z33", "hgj"); ("gws", "nnt"); ("z19", "cph") ]
+
+    // fix the swapped gates...
+    let fixedGates =
+        gates
+        |> Array.map (fun g ->
+            let out =
+                match g with
+                | OR(_, _, out)
+                | XOR(_, _, out)
+                | AND(_, _, out) -> out
+
+            match swaps |> List.tryFind (fun (o1, o2) -> o1 = out || o2 = out) with
+            | Some(o1, o2) ->
+                match g with
+                | OR(a, b, out) -> OR(a, b, if out = o1 then o2 else o1)
+                | XOR(a, b, out) -> XOR(a, b, if out = o1 then o2 else o1)
+                | AND(a, b, out) -> AND(a, b, if out = o1 then o2 else o1)
+            | None -> g)
+
+    // execute some tests...
+    let significantBits = 45 // z00..z44. z45 is the carry bit.
+    let maxInput = (1L <<< significantBits) - 1L
+    let maxOutput = (1L <<< (significantBits + 1)) - 1L
+
+    [ (0L, 0L, 0L)
+      (1L, 1L, 2L)
+      (123L, 456L, 579L)
+      (maxInput, 0L, maxInput)
+      (0L, maxInput, maxInput)
+      (1L, maxInput, maxInput + 1L)
+      (maxInput, maxInput, maxInput + maxInput) ]
+    |> List.iteri (fun i (x, y, expected) ->
+        executePuzzle
+            $"Part 2 test {i} ({x:x} + {y:x})"
+            (fun () ->
+                assert (x >= 0L && x <= maxInput)
+                assert (y >= 0L && y <= maxInput)
+
+                let inputs =
+                    [| for bit = 0 to significantBits do
+                           yield sprintf "x%02d" bit, x &&& (1L <<< bit) <> 0L
+                           yield sprintf "y%02d" bit, y &&& (1L <<< bit) <> 0L |]
+
+                execute (inputs, fixedGates))
+            expected)
+
+    // return the solution (sorted outputs)
+    swaps |> Seq.collect (fun (a, b) -> [ a; b ]) |> Seq.sort |> String.concat ","
+
+writeGraphviz "sample" sample1
+writeGraphviz "" data.Value
 
 executePuzzle "Part 1 sample" (fun () -> part1 sample1) 4L
 executePuzzle "Part 1 sample" (fun () -> part1 sample2) 2024L
 executePuzzle "Part 1 finale" (fun () -> part1 data.Value) 42049478636360L
 
-executePuzzle "Part 2 sample" (fun () -> part2 sample1) 0
-executePuzzle "Part 2 finale" (fun () -> part2 data.Value) 0
+executePuzzle "Part 2 finale" (fun () -> part2 data.Value) "cph,gws,hgj,nnt,npf,z13,z19,z33"
